@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Eduport- LMS, Education and Course Theme</title>
+
+    <!-- Meta Tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="author" content="Webestica.com" />
+    <meta
+      name="description"
+      content="Eduport- LMS, Education and Course Theme"
+    />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta
+      name="utc-offset"
+      content="{% if request.user.time_zone_id %}{{request.user.time_zone.utc_offset}}{% endif %}"
+    />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/images/favicon.ico" />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+    />
+
+    <!-- Plugins CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/vendor/font-awesome/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/vendor/bootstrap-icons/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/vendor/apexcharts/css/apexcharts.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/vendor/overlay-scrollbar/css/OverlayScrollbars.min.css"
+    />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+
+    <!-- libraries -->
+    <link rel="stylesheet" href="/static/libraries/alertify.min.css" />
+    <link rel="stylesheet" href="/static/over-ride-libs/style.css" />
+    <style>
+        .login-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+  </head>
+
+  <body>
+    <div id="messages" style="display: none">
+      {% for message in messages %}
+      <span>{{ message.tags }}||||{{ message }}</span>
+      {% endfor %}
+    </div>
+    <!-- **************** MAIN CONTENT START **************** -->
+    <main>
+      <!-- Page content START -->
+      <div class="login-box">
+        <!-- Page main content START -->
+        <a class="navbar-brand" href="/">
+            <img style="height: 75px;" src="/static/images/logo-pic.png" alt="logo">
+        </a>
+        <h1 class="fs-2">Admin Login</h1>
+        <form style="max-width:480px; width: 100%;"  onsubmit="event.preventDefault(); login();">
+            <!-- Email -->
+            <div class="mb-4">
+              <label for="email" class="form-label">
+                Email address *
+              </label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3">
+                  <i class="bi bi-envelope-fill"></i>
+                </span>
+                <input type="email" class="form-control border-0 bg-light rounded-end ps-1" placeholder="E-mail" id="email">
+              </div>
+            </div>
+            <!-- Password -->
+            <div class="mb-4">
+              <label for="password" class="form-label">Password *</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text bg-light rounded-start border-0 text-secondary px-3"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control border-0 bg-light rounded-end ps-1" placeholder="password" id="password">
+              </div>
+            </div>
+            <!-- Button -->
+            <div class="align-items-center mt-0">
+              <div class="d-grid">
+                <button class="btn btn-primary mb-0" type="submit">
+                  Login
+                </button>
+              </div>
+            </div>
+          </form>
+        <!-- Page main content END -->
+      </div>
+      <!-- Page content END -->
+    </main>
+    <!-- **************** MAIN CONTENT END **************** -->
+
+    <!-- Back to top -->
+    <div class="back-top">
+      <i
+        class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"
+      ></i>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="/static/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Vendors -->
+    <script src="/static/vendor/purecounterjs/dist/purecounter_vanilla.js"></script>
+    <script src="/static/vendor/apexcharts/js/apexcharts.min.js"></script>
+    <script src="/static/vendor/overlay-scrollbar/js/overlayscrollbars.min.js"></script>
+
+    <!-- Template Functions -->
+    <script src="/static/js/functions.js"></script>
+
+    <!-- libraries -->
+    <script src="/static/libraries/alertify.min.js"></script>
+    <!-- custom -->
+    <script src="/static/js/requests.js"></script>
+    <script src="/static/js/common.js?v=0.01"></script>
+    <script src="/static/js/admin.js"></script>
+    <script>
+        const login = async () => {
+          const data = {
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+          };
+          // startLoading();
+          const res = await fetch("", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": "{{csrf_token}}",
+            },
+            body: JSON.stringify(data),
+          });
+          // stopLoading();
+          if (res.status === 200) {
+            const data = (await res.json()).data;
+            if (data.role === 4) window.location.href = "/student/dashboard";
+            else if (data.role === 3) window.location.href = "/instructor/dashboard";
+            else if (data.role === 1 || data.role === 2) window.location.href = "/admin/dashboard";
+            else window.location.href = "/";
+          } else if (res.status === 401) {
+            alert((await res.json()).msg);
+          } else {
+            alert("Something went wrong.");
+          }
+        };
+      </script>
+  </body>
+</html>

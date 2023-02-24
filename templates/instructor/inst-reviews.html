@@ -1,0 +1,138 @@
+{% extends request.layout %} {% block content %}
+<style>
+  button.page-link:disabled {
+    cursor: not-allowed;
+  }
+  .i-btn {
+    font-size: 18px;
+    margin: 0 6px;
+    border: none;
+    background-color: transparent;
+    color: black;
+  }
+  .i-btn:hover,
+  .i-btn.active {
+    color: #066ac9;
+  }
+</style>
+<div class="col-xl-9">
+  <!-- Counter boxes START -->
+
+  <!-- Counter boxes END -->
+
+  <div class="card bg-transparent border rounded-3">
+    <!-- Card header START -->
+    <div class="card-header d-flex justify-content-between border-bottom">
+      <h3 class="mb-0">Reviews</h3>
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Course list table START -->
+      <div class="table-responsive border-0" id="reviews"></div>
+      <!-- Course list table END -->
+
+      <!-- Pagination START -->
+      <div
+        class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3"
+      >
+        <!-- Content -->
+        <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+        <!-- Pagination -->
+        <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+          <ul
+            class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+          >
+            <li class="page-item mb-0">
+              <button class="page-link" id="back_btn" onclick="decreasePage()">
+                <i class="fas fa-angle-left"></i>
+              </button>
+            </li>
+            <li class="page-item mb-0 active">
+              <button class="page-link" id="page-no">2</button>
+            </li>
+            <li class="page-item mb-0">
+              <button class="page-link" id="next_page" onclick="increasePage()">
+                <i class="fas fa-angle-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Pagination END -->
+    </div>
+    <!-- Card body START -->
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script src="/static/js/post.js"></script>
+<script>
+  var pageIncBtn = document.getElementById("next_page");
+  var pageDecBtn = document.getElementById("back_btn");
+  var pageNo = 0;
+  var rowCount = 10;
+  var pageAvail = 0;
+  const loader = `
+    <div class="spinner-border m-auto my-5 d-block" id="loader">
+      <span class="visually-hidden">Loading...</span>
+    </div>`;
+  const loadReviews = async () => {
+    document.getElementById("reviews").innerHTML = loader;
+    let params = `?no_of_row=${rowCount}&offset=${rowCount * pageNo}`;
+    const res = await fetch("{% url 'inst_review_list' %}" + params, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    let dataHtml = "";
+    if (res.status === 200) {
+      const data = (await res.json()).data;
+      const rowsAvail = data.rows.length;
+      if (rowsAvail > 0) {
+        data.rows.forEach((row, rowIndex) => {
+          const starsHtml =
+          '<li class="list-inline-item me-0"><i class="fas fa-star text-warning"></i></li>'.repeat(
+            row[1]
+          ) +
+          '<li class="list-inline-item me-0 small"><i class="far fa-star text-warning"></i></li>'.repeat(
+            5 - row[1]
+          );
+          dataHtml += `
+          <div class="card border rounded-3 my-3" id="q-${row[0]}">
+            <div class="card-header border-bottom d-flex justify-content-between flex-wrap">
+              <h6 class="my-0">@${row[4]}</h6>
+              <b>${fromatToDateTime(row[3].split('.')[0])}</b>
+            </div>
+            <div class="card-body"><p>${starsHtml}</p><p>${row[2]}</p></div>
+            <!--<div class="card-footer border-top"></div>-->
+          </div>`;
+        });
+      }
+      document.getElementById("reviews").innerHTML = dataHtml;
+      pageAvail = parseInt(data.count / rowCount);
+      pageDecBtn.disabled = pageNo > 0 ? false : true;
+      pageIncBtn.disabled = pageNo < pageAvail ? false : true;
+      document.getElementById("page-no").innerHTML = pageNo + 1;
+      document.getElementById("entries_details").innerHTML = `Showing ${
+        rowCount * pageNo + 1
+      } to ${rowCount * pageNo + rowsAvail} of ${data.count} entries`;
+    } else {
+      document.getElementById("reviews").innerHTML = "";
+    }
+  };
+  const decreasePage = () => {
+    if (pageNo > 0) {
+      pageNo--;
+      loadReviews();
+    }
+  };
+  const increasePage = () => {
+    if (pageNo < pageAvail) {
+      pageNo++;
+      loadReviews();
+    }
+  };
+  // --------------- Call table reload ---------------
+  loadReviews();
+</script>
+{% endblock content %}

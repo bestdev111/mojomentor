@@ -1,0 +1,124 @@
+{% extends 'layouts/admin-layout.html' %} {% block content %}
+<div class="page-content-wrapper border">
+  <!-- Title -->
+  <div class="row mb-3">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+      <h1 class="h3 mb-2 mb-sm-0">Instructors</h1>
+    </div>
+  </div>
+
+  <!-- Card START -->
+  <div class="card bg-transparent border">
+    <!-- Card header START -->
+    <div class="card-header bg-light border-bottom">
+      <!-- Search and select START -->
+      <div class="row g-3 align-items-center justify-content-between">
+        <!-- Search bar -->
+        <div class="col-md-8">
+          <form class="rounded position-relative">
+            <input
+              class="form-control bg-body"
+              type="search"
+              id="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button
+              class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset"
+              onclick="renderTable()"
+              type="button"
+            >
+              <i class="fas fa-search fs-6"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Select option -->
+        {% comment %}
+        <div class="col-md-3">
+          <!-- Short by filter -->
+          <form>
+            <select
+              class="form-select js-choice border-0 z-index-9"
+              aria-label=".form-select-sm"
+            >
+              <option value="">Sort by</option>
+              <option>Newest</option>
+              <option>Oldest</option>
+              <option>Accepted</option>
+              <option>Rejected</option>
+            </select>
+          </form>
+        </div>
+        {% endcomment %}
+      </div>
+      <!-- Search and select END -->
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Course table START -->
+      <div class="table-responsive border-0 rounded-3">
+        <!-- Table START -->
+        <table
+          class="table table-dark-gray align-middle p-4 mb-0 table-hover"
+          id="data-table"
+        >
+          <!-- Table head -->
+          <thead></thead>
+          <!-- Table body START -->
+          <tbody></tbody>
+          <!-- Table body END -->
+        </table>
+        <!-- Table END -->
+      </div>
+      <!-- Course table END -->
+    </div>
+    <!-- Card body END -->
+
+    <!-- Card footer START -->
+    <div class="card-footer bg-transparent pt-0">
+      <!-- Pagination START -->
+      <div
+        class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3"
+      >
+        <!-- Content -->
+        <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+        <!-- Pagination -->
+        <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+          <ul
+            class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+          >
+            <li class="page-item mb-0">
+              <button class="page-link" id="back_btn" onclick="decreasePage()">
+                <i class="fas fa-angle-left"></i>
+              </button>
+            </li>
+            <li class="page-item mb-0 active">
+              <button class="page-link" id="page-no">1</button>
+            </li>
+            <li class="page-item mb-0">
+              <button class="page-link" id="next_page" onclick="increasePage()">
+                <i class="fas fa-angle-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Pagination END -->
+    </div>
+    <!-- Card footer END -->
+  </div>
+  <!-- Card END -->
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script>
+  const listUrl = "{% url 'ad_instructor_list' %}";
+  const needTable = true;
+  const actions = (row) => {
+    return `<a href="/admin/instructor/${row[0]}/view" class="btn btn-sm btn-success me-1 mb-1 mb-md-0">View</a>`;
+    //   <button class="btn btn-sm btn-danger mb-0">Delete</button>
+  };
+</script>
+{% endblock content %}

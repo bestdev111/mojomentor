@@ -1,0 +1,194 @@
+{% extends request.layout %} {% block content %}
+<style>
+  button.page-link:disabled {
+    cursor: not-allowed;
+  }
+  .i-btn {
+    font-size: 18px;
+    margin: 0 6px;
+    border: none;
+    background-color: transparent;
+    color: black;
+  }
+  .i-btn:hover,
+  .i-btn.active {
+    color: #066ac9;
+  }
+</style>
+<div class="col-xl-9">
+  <!-- Counter boxes START -->
+
+  <!-- Counter boxes END -->
+
+  <div class="card bg-transparent border rounded-3">
+    <!-- Card header START -->
+    <div class="card-header d-flex justify-content-between border-bottom">
+      <h3 class="mb-0">My questions List</h3>
+      <a href="{% url 'post_question' %}" class="btn btn-sm btn-success">
+        Post Questions
+      </a>
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Search and select START -->
+      <div class="row g-3 align-items-center justify-content-between mb-4">
+        <!-- Content -->
+        <div class="col-md-8">
+          <div class="rounded position-relative">
+            <input
+              class="form-control pe-5 bg-transparent"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              id="search"
+            />
+
+            <button
+              class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset"
+              type="button"
+              onclick="loadQuestions()"
+            >
+              <i class="fas fa-search fs-6"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Select option -->
+        <div class="col-md-3">
+          <!-- Short by filter -->
+          <select
+            class="form-select js-choice border-0 z-index-9 bg-transparent"
+            aria-label=".form-select-sm"
+            id="category"
+            onchange="loadQuestions()"
+          >
+            <option value="">Category</option>
+            {% for cat in categories %}
+            <option value="{{cat.id}}">{{cat.title}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <!-- Search and select END -->
+
+      <!-- Course list table START -->
+      <div class="table-responsive border-0" id="questions"></div>
+      <!-- Course list table END -->
+
+      <!-- Pagination START -->
+      <div
+        class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3"
+      >
+        <!-- Content -->
+        <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+        <!-- Pagination -->
+        <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+          <ul
+            class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+          >
+            <li class="page-item mb-0">
+              <button class="page-link" id="back_btn" onclick="decreasePage()">
+                <i class="fas fa-angle-left"></i>
+              </button>
+            </li>
+            <li class="page-item mb-0 active">
+              <button class="page-link" id="page-no">2</button>
+            </li>
+            <li class="page-item mb-0">
+              <button class="page-link" id="next_page" onclick="increasePage()">
+                <i class="fas fa-angle-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Pagination END -->
+    </div>
+    <!-- Card body START -->
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script src="/static/js/post.js"></script>
+<script>
+  var category = document.getElementById("category");
+  var pageIncBtn = document.getElementById("next_page");
+  var pageDecBtn = document.getElementById("back_btn");
+  var oldSearch = "";
+  var oldCategory = "";
+  var pageNo = 0;
+  var rowCount = 10;
+  var pageAvail = 0;
+  const loader = `
+    <div class="spinner-border m-auto my-5 d-block" id="loader">
+      <span class="visually-hidden">Loading...</span>
+    </div>`;
+  const loadQuestions = async () => {
+    document.getElementById("questions").innerHTML = loader;
+    if (search.value != oldSearch || category.value != oldCategory) {
+      pageNo = 0;
+      oldSearch = search.value;
+      oldCategory = category.value;
+    }
+    let params = `?search=${search.value}&category=${
+      category.value
+    }&no_of_row=${rowCount}&offset=${rowCount * pageNo}`;
+    const res = await fetch("{% url 'my_question_list' %}" + params, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    let dataHtml = "";
+    if (res.status === 200) {
+      const data = (await res.json()).data;
+      const rowsAvail = data.rows.length;
+      if (rowsAvail > 0) {
+        data.rows.forEach((row, rowIndex) => {
+          dataHtml += `
+          <div class="card border rounded-3 my-3" id="q-${row[0]}">
+            <div class="card-header border-bottom d-flex justify-content-between flex-wrap">
+              <h6 class="my-0">@${row[3]}</h6>
+              <b>${row[4] ? row[4] + " | " : ""}${fromatToDateTime(row[2].split('.')[0])}</b>
+            </div>
+            <div class="card-body">${row[1]}</div>
+            <div class="card-footer border-top">
+              <button class="i-btn ${row[6] ? "active" : ""}"
+              onclick="likeQues(this, ${row[0]})" data-liked="${row[6]}">
+                <i class="fas fa-thumbs-up"></i> Like
+                <span class="likes">${row[5] ? row[5] : ""}</span>
+              </button>
+              <a href="/post/question/${row[0]}" class="i-btn">
+                <i class="fas fa-comment"></i>
+                Answer ${row[7] ? row[7] : ""}</a>
+            </div>
+          </div>`;
+        });
+      }
+      document.getElementById("questions").innerHTML = dataHtml;
+      pageAvail = parseInt(data.count / rowCount);
+      pageDecBtn.disabled = pageNo > 0 ? false : true;
+      pageIncBtn.disabled = pageNo < pageAvail ? false : true;
+      document.getElementById("page-no").innerHTML = pageNo + 1;
+      document.getElementById("entries_details").innerHTML = `Showing ${
+        rowCount * pageNo + 1
+      } to ${rowCount * pageNo + rowsAvail} of ${data.count} entries`;
+    } else {
+      document.getElementById("questions").innerHTML = "";
+    }
+  };
+  const decreasePage = () => {
+    if (pageNo > 0) {
+      pageNo--;
+      loadQuestions();
+    }
+  };
+  const increasePage = () => {
+    if (pageNo < pageAvail) {
+      pageNo++;
+      loadQuestions();
+    }
+  };
+  // --------------- Call table reload ---------------
+  loadQuestions();
+</script>
+{% endblock content %}

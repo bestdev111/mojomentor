@@ -1,0 +1,136 @@
+id,name,utc_offset,utc_offset_min,is_dst
+8,UTC-09,-09:00,-540,f
+10,UTC-08,-08:00,-480,f
+11,Pacific Standard Time,-07:00,-420,t
+12,US Mountain Standard Time,-07:00,-420,f
+13,Mountain Standard Time (Mexico),-06:00,-360,t
+15,Central America Standard Time,-06:00,-360,f
+16,Central Standard Time,-05:00,-300,t
+46,Cape Verde Standard Time,-01:00,-60,f
+47,UTC,+00:00,0,f
+49,GMT Standard Time,+01:00,60,t
+50,Greenwich Standard Time,+00:00,0,f
+51,W. Europe Standard Time,+02:00,120,t
+53,Romance Standard Time,+02:00,120,t
+54,Central European Standard Time,+02:00,120,t
+55,W. Central Africa Standard Time,+01:00,60,f
+56,Namibia Standard Time,+01:00,60,f
+58,GTB Standard Time,+03:00,180,t
+59,Middle East Standard Time,+03:00,180,t
+60,Egypt Standard Time,+02:00,120,f
+62,Syria Standard Time,+03:00,180,t
+63,West Bank Standard Time,+03:00,180,t
+64,South Africa Standard Time,+02:00,120,f
+66,Israel Standard Time,+03:00,180,t
+67,Kaliningrad Standard Time,+02:00,120,f
+68,Libya Standard Time,+02:00,120,f
+69,Arabic Standard Time,+03:00,180,f
+71,Arab Standard Time,+03:00,180,f
+72,Belarus Standard Time,+03:00,180,f
+73,Russian Standard Time,+03:00,180,f
+75,Iran Standard Time,+04:30,270,t
+76,Arabian Standard Time,+04:00,240,f
+77,Astrakhan Standard Time,+04:00,240,f
+79,Russia Time Zone 3,+04:00,240,f
+80,Mauritius Standard Time,+04:00,240,f
+81,Saratov Standard Time,+04:00,240,f
+82,Georgian Standard Time,+04:00,240,f
+84,Afghanistan Standard Time,+04:30,270,f
+93,Omsk Standard Time,+06:00,360,f
+94,Myanmar Standard Time,+06:30,390,f
+95,SE Asia Standard Time,+07:00,420,f
+97,W. Mongolia Standard Time,+07:00,420,f
+98,North Asia Standard Time,+07:00,420,f
+99,N. Central Asia Standard Time,+07:00,420,f
+100,Tomsk Standard Time,+07:00,420,f
+26,Paraguay Standard Time,-04:00,-240,f
+27,Atlantic Standard Time,-03:00,-180,t
+29,Central Brazilian Standard Time,-04:00,-240,f
+30,SA Western Standard Time,-04:00,-240,f
+31,Pacific SA Standard Time,-03:00,-180,t
+32,Turks And Caicos Standard Time,-04:00,-240,f
+34,Tocantins Standard Time,-03:00,-180,f
+35,E. South America Standard Time,-03:00,-180,f
+104,W. Australia Standard Time,+08:00,480,f
+36,SA Eastern Standard Time,-03:00,-180,f
+107,North Korea Standard Time,+08:30,510,f
+108,Aus Central W. Standard Time,+08:45,525,f
+110,Tokyo Standard Time,+09:00,540,f
+111,Korea Standard Time,+09:00,540,f
+112,Yakutsk Standard Time,+09:00,540,f
+113,Cen. Australia Standard Time,+09:30,570,f
+115,E. Australia Standard Time,+10:00,600,f
+116,AUS Eastern Standard Time,+10:00,600,f
+102,North Asia East Standard Time,+08:00,480,f
+17,Easter Island Standard Time,-05:00,-300,t
+103,Singapore Standard Time,+08:00,480,f
+20,SA Pacific Standard Time,-05:00,-300,f
+21,Eastern Standard Time (Mexico),-05:00,-300,f
+106,Ulaanbaatar Standard Time,+08:00,480,f
+37,Argentina Standard Time,-03:00,-180,f
+39,Montevideo Standard Time,-03:00,-180,f
+40,Magallanes Standard Time,-03:00,-180,f
+41,Saint Pierre Standard Time,-02:00,-120,t
+42,Bahia Standard Time,-03:00,-180,f
+43,UTC-02,-02:00,-120,f
+45,Azores Standard Time,+00:00,0,t
+19,Canada Central Standard Time,-06:00,-360,f
+3,UTC-11,-11:00,-660,f
+4,Aleutian Standard Time,-09:00,-540,t
+5,Hawaiian Standard Time,-10:00,-600,f
+7,Alaskan Standard Time,-08:00,-480,t
+123,Magadan Standard Time,+11:00,660,f
+44,Mid-Atlantic Standard Time,-01:00,-60,t
+105,Taipei Standard Time,+08:00,480,f
+48,Morocco Standard Time,+01:00,60,t
+22,Eastern Standard Time,-04:00,-240,t
+38,Greenland Standard Time,-02:00,-120,t
+23,Haiti Standard Time,-04:00,-240,t
+114,AUS Central Standard Time,+09:30,570,f
+14,Mountain Standard Time,-06:00,-360,t
+89,Sri Lanka Standard Time,+05:30,330,f
+135,Samoa Standard Time,+13:00,780,f
+134,Tonga Standard Time,+13:00,780,f
+88,India Standard Time,+05:30,330,f
+86,Ekaterinburg Standard Time,+05:00,300,f
+129,UTC+12,+12:00,720,f
+130,Fiji Standard Time,+12:00,720,f
+101,China Standard Time,+08:00,480,f
+127,Russia Time Zone 11,+12:00,720,f
+128,New Zealand Standard Time,+12:00,720,f
+119,Vladivostok Standard Time,+10:00,600,f
+120,Lord Howe Standard Time,+10:30,630,f
+91,Central Asia Standard Time,+06:00,360,f
+90,Nepal Standard Time,+05:45,345,f
+96,Altai Standard Time,+07:00,420,f
+24,Cuba Standard Time,-04:00,-240,t
+131,Kamchatka Standard Time,+13:00,780,t
+28,Venezuela Standard Time,-04:00,-240,f
+33,Newfoundland Standard Time,-02:30,-150,t
+74,E. Africa Standard Time,+03:00,180,f
+78,Azerbaijan Standard Time,+04:00,240,f
+83,Caucasus Standard Time,+04:00,240,f
+52,Central Europe Standard Time,+02:00,120,t
+109,Transbaikal Standard Time,+09:00,540,f
+87,Pakistan Standard Time,+05:00,300,f
+117,West Pacific Standard Time,+10:00,600,f
+118,Tasmania Standard Time,+10:00,600,f
+25,US Eastern Standard Time,-04:00,-240,t
+124,Norfolk Standard Time,+11:00,660,f
+125,Sakhalin Standard Time,+11:00,660,f
+126,Central Pacific Standard Time,+11:00,660,f
+85,West Asia Standard Time,+05:00,300,f
+92,Bangladesh Standard Time,+06:00,360,f
+136,Line Islands Standard Time,+14:00,840,f
+2,Dateline Standard Time,-12:00,-720,f
+132,Chatham Islands Standard Time,+12:45,765,f
+121,Bougainville Standard Time,+11:00,660,f
+122,Russia Time Zone 10,+11:00,660,f
+133,UTC+13,+13:00,780,f
+65,FLE Standard Time,+03:00,180,t
+18,Central Standard Time (Mexico),-05:00,-300,t
+57,Jordan Standard Time,+03:00,180,t
+61,E. Europe Standard Time,+03:00,180,t
+70,Turkey Standard Time,+03:00,180,f
+6,Marquesas Standard Time,-09:30,-570,f
+9,Pacific Standard Time (Mexico),-07:00,-420,t

@@ -1,0 +1,99 @@
+{% extends 'layouts/admin-layout.html' %} {% block content %}
+<div class="page-content-wrapper border">
+  <!-- Code -->
+  <div class="row mb-3">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+      <h1 class="h3 mb-2 mb-sm-0">Student</h1>
+      <a href="{% url 'ad_students' %}" class="btn btn-sm btn-primary mb-0"
+        >Back to Student list</a
+      >
+    </div>
+  </div>
+
+  <!-- Card START -->
+  <div class="card bg-transparent border">
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Course table START -->
+      <form class="row g-4 align-items-center" method="POST">
+        {% csrf_token %}
+
+        <div class="col-lg-6">
+          <label class="form-label" for="first_name">First Name</label>
+          <p><b>{{student.first_name}}</b></p>
+        </div>
+        <div class="col-lg-6">
+          <label class="form-label" for="last_name">Last Name</label>
+          <p><b>{{student.last_name}}</b></p>
+        </div>
+        <div class="col-lg-6">
+          <label class="form-label" for="username">User-name</label>
+          <p><b>{{student.username}}</b></p>
+        </div>
+        <div class="col-lg-6">
+          <label class="form-label" for="username">Last-login</label>
+          <p><b>{{student.last_login}}</b></p>
+        </div>
+        <div class="col-lg-6">
+          <label class="form-label" for="email">e-mail</label>
+          <p><b>{{student.email}}</b></p>
+        </div>
+
+        <div class="col-lg-6">
+          <label class="form-label" for="status">Status</label>
+
+          {% if student.is_active == True %}
+          <p><b>Active</b></p>
+          {% elif student.is_active == False %}
+          <p><b>InActive</b></p>
+          {% endif %}
+
+          <!-- <select name="status" id="status" class="form-control" required>
+                        <option value="1" {% if user.status == True %}selected{% endif %}>Active</option>
+                        <option value="0" {% if user.status == False %}selected{% endif %}>InActive</option>
+                    </select> -->
+        </div>
+        <div class="d-sm-flex justify-content-between">
+          <a href="{% url 'ad_user_chats' student.id %}" class="btn btn-success mb-0">See all chats</a>
+
+
+          {% if student.is_active == True %}
+          <button
+            onclick="change_user_status(0), this"
+            type="button"
+            class="btn btn-danger mb-0"
+          >
+            block
+          </button>
+          {% else %}
+          <button
+            onclick="change_user_status(1), this"
+            type="button"
+            class="btn btn-success mb-0"
+          >
+            unblock
+          </button>
+          {% endif %}
+        </div>
+      </form>
+      <!-- Course table END -->
+    </div>
+    <!-- Card body END -->
+  </div>
+  <!-- Card END -->
+</div>
+<script>
+  async function change_user_status(status, btn) {
+    showBtnLoading(btn);
+    const res = await postToServer(`/account/change-status/{{student.id}}`, {
+      status: status,
+    });
+    hideBtnLoading(btn);
+    if (res.status) {
+      window.location.reload();
+    } else {
+      alertify.error(res.msg);
+    }
+  }
+</script>
+{% endblock content %}

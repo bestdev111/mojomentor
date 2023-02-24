@@ -1,0 +1,62 @@
+<!-- Popup modal for image cropper START -->
+<style>
+  .cropper-popup {
+    position: fixed;
+    top: 45%;z-index: 2;
+    width: 100%;
+    max-width:600px;
+    max-height: 800px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1025;
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    display: none;
+  }
+</style>
+<div class="cropper-popup" id="cropperPopup">
+  <br />
+  <div id="cropperResult"></div>
+  <br />
+  <div class="text-end">
+    <button type="button" class="btn btn-danger-soft my-0" onclick="document.getElementById('cropperPopup').style.display='none'">Close</button>
+    <button type="button" class="btn btn-success my-0" onclick="uploadProfilePic(this)">Save</button>
+  </div>
+  <br />
+</div>
+<script>
+  var cropper = null;
+  const changeProfilePic = (obj) => {
+    if(obj.files.length) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        if (e.target.result) {
+          const result = document.getElementById('cropperResult')
+          const img = document.createElement('img');
+          img.id = 'image';
+          img.src = e.target.result;
+          // clean result before
+          result.innerHTML = '';
+          // append new image
+          result.appendChild(img);
+          document.getElementById('cropperPopup').style.display='block';
+          cropper = new Cropper(img, {aspectRatio: 1 / 1});
+        }
+      }
+      reader.readAsDataURL(obj.files[0]);
+    }
+  }
+  const uploadProfilePic = async(btn) => {
+    let imgSrc = cropper.getCroppedCanvas({
+      width: 250, height: 250, // input value
+    }).toDataURL();
+    cropper = null;
+    showBtnLoading(btn);
+    const res = await postToServer("{% url 'user_update' %}", {type: "pic", pic_data: imgSrc});
+    hideBtnLoading(btn);
+    document.getElementById('profile-display').src = imgSrc;
+    document.getElementById('cropperPopup').style.display='none';
+    res.status ? alertify.success(res.msg) : alertify.error(res.msg);
+  }
+</script>
+<!-- Popup modal for image cropper END -->

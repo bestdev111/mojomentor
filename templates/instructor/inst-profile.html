@@ -1,0 +1,506 @@
+{% extends request.layout %} {% block content %}
+<div class="col-xl-9">
+  <!-- Edit profile START -->
+  <div class="card bg-transparent border rounded-3">
+    <!-- Card header -->
+    <div class="card-header bg-transparent border-bottom">
+      <h3 class="card-header-title mb-0">Edit Profile</h3>
+    </div>
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Form -->
+      <form class="row g-4">
+        <!-- Profile picture -->
+        <div class="col-12 justify-content-center align-items-center">
+          <label class="form-label">Profile picture</label>
+          <div class="d-flex align-items-center">
+            <label
+              class="position-relative me-4"
+              for="uploadfile-1"
+              title="Replace this pic"
+            >
+              <!-- Avatar place holder -->
+              <span class="avatar avatar-xl">
+                <img
+                  id="profile-display"
+                  class="avatar-img rounded-circle border border-white border-3 shadow"
+                  src="{% if request.user.profile_pic %}{{request.user.profile_pic.url}}{% else %}/static/images/user.png{% endif %}"
+                  alt=""
+                />
+              </span>
+              <!-- Remove btn -->
+              <button type="button" class="uploadremove">
+                <i class="bi bi-x text-white"></i>
+              </button>
+            </label>
+            <!-- Upload button -->
+            <label class="btn btn-primary-soft mb-0" for="uploadfile-1">Change</label>
+            <input id="uploadfile-1" onchange="changeProfilePic(this)" class="form-control d-none" type="file" />
+          </div>
+        </div>
+
+        <!-- Full name -->
+        <div class="col-12">
+          <label class="form-label">Full name</label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              value="{{request.user.first_name}}"
+              id="f_name"
+              placeholder="First name"
+            />
+            <input
+              type="text"
+              class="form-control"
+              value="{{request.user.last_name}}"
+              id="l_name"
+              placeholder="Last name"
+            />
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="col-md-6">
+          <label class="form-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text">Eduport.com</span>
+            <input
+              type="text"
+              class="form-control"
+              value="{{request.user.username}}"
+              disabled
+            />
+          </div>
+        </div>
+
+        <!-- Email address -->
+        <div class="col-md-6">
+          <label class="form-label">Email Address</label>
+          <input
+            class="form-control"
+            type="email"
+            value="{{request.user.email}}"
+            placeholder="Email"
+            disabled
+          />
+        </div>
+
+        <!-- Location -->
+        <div class="col-md-6">
+          <label class="form-label">Location</label>
+          <select id="location" class="form-control">
+            <option value="">Please choose a country</option>
+            {% for country in countries %}
+            <option value="{{country.0}}" {% if country.0 == request.user.country_id %}selected{% endif %}>{{country.1}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Phone number -->
+        <div class="col-md-6">
+          <label class="form-label">Phone number</label>
+          <input
+            type="number"
+            class="form-control"
+            id="phone_no"
+            value="{% if request.user.phone_no %}{{request.user.phone_no}}{% endif %}"
+            placeholder="Phone number"
+            onkeypress="return validatePhoneNo(event, this)"
+          />
+        </div>
+
+        <!-- Time zone -->
+        <div class="col-md-6">
+          <label class="form-label">Time Zone</label>
+          <select class="form-control" id="time_zone">
+            {% for time_zone in time_zones %}
+            <option value="{{time_zone.0}}" {% if time_zone.0 == time_zone_id %}selected{% endif %}>{{time_zone.1}} | {{time_zone.2}}</option>
+            {% endfor %}
+          </select>
+          <!-- value="{% if request.user.phone_no %}{{request.user.phone_no}}{% endif %}" -->
+        </div>
+
+        <!-- Save button -->
+        <div class="d-sm-flex justify-content-end">
+          <button
+            type="button"
+            class="btn btn-primary mb-0"
+            onclick="saveProfile(this, 'basic_info')"
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Card body END -->
+  </div>
+  <!-- Edit profile END -->
+
+  <!-- Instructor profile START -->
+  <div class="card bg-transparent border rounded-3 mt-4">
+    <!-- Card header -->
+    <div class="card-header bg-transparent border-bottom">
+      <h3 class="card-header-title mb-0">Edit About</h3>
+    </div>
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Form -->
+      <form class="row g-4" onsubmit="event.preventDefault(); updateAbout();">
+
+        <!-- Start time -->
+        <div class="col-md-6">
+          <label class="form-label">Availability Start time</label>
+          <input
+            type="time"
+            class="form-control"
+            id="start_time"
+            value="{{start_time}}"
+            placeholder="HH:MM"
+          />
+        </div>
+
+        <!-- End time -->
+        <div class="col-md-6">
+          <label class="form-label">Availability End time</label>
+          <input
+            type="time"
+            class="form-control"
+            id="end_time"
+            value="{{end_time}}"
+            placeholder="HH:MM"
+          />
+        </div>
+        <!-- About me -->
+        <div class="col-12">
+          <label class="form-label">About me</label>
+          <textarea class="form-control" rows="3" id="about" required>{{profile.about}}</textarea>
+          <div class="form-text">Brief description for your profile.</div>
+        </div>
+
+        <!-- Education -->
+        <div class="col-12">
+          <div id="edu-box">
+            <label class="form-label">Education</label>
+            {% if educations %}
+            {% for education in educations %}
+            <input
+              class="form-control mb-2"
+              type="text"
+              value="{{education.value}}"
+              maxlength="255"
+              name="education"
+              placeholder="Eg. Bachelor in Computer Graphics"
+              id="ed-{{education.id}}"
+              required
+            />
+            {% endfor %}
+            {% else %}
+              <input
+                class="form-control mb-2"
+                type="text"
+                maxlength="255"
+                name="education"
+                placeholder="Eg. Bachelor in Computer Graphics"
+              />
+            {% endif %}
+          </div>
+          <button class="btn btn-sm btn-light mb-0" onclick="addMoreEdu(event)">
+            <i class="bi bi-plus me-1"></i>Add more
+          </button>
+        </div>
+
+        <!-- socail media links -->
+        <div class="col-md-12">
+          <label class="form-label">Social media links</label>
+          <div class="input-group mb-2">
+            <span class="input-group-text" style="width:100px">Twitter</span>
+            <input
+              type="text"
+              class="form-control"
+              value="{% if profile.twitter %}{{profile.twitter}}{% endif %}"
+              id="twitter"
+            />
+          </div>
+          <div class="input-group mb-2">
+            <span class="input-group-text" style="width:100px">Instagram</span>
+            <input
+              type="text"
+              class="form-control"
+              value="{% if profile.instagram %}{{profile.instagram}}{% endif %}"
+              id="instagram"
+            />
+          </div>
+          <div class="input-group mb-2">
+            <span class="input-group-text" style="width:100px">Facebook</span>
+            <input
+              type="text"
+              class="form-control"
+              value="{% if profile.instagram %}{{profile.instagram}}{% endif %}"
+              id="facebook"
+            />
+          </div>
+          <div class="input-group mb-2">
+            <span class="input-group-text" style="width:100px">Linked In&nbsp;</span>
+            <input
+              type="text"
+              class="form-control"
+              value="{% if profile.linkedin %}{{profile.linkedin}}{% endif %}"
+              id="linkedin"
+            />
+          </div>
+          <div class="input-group">
+            <span class="input-group-text" style="width:100px">YouTube&nbsp;</span>
+            <input
+              type="text"
+              class="form-control"
+              value="{% if profile.youtube %}{{profile.youtube}}{% endif %}"
+              id="youtube"
+            />
+          </div>
+        </div>
+
+        <!-- Save button -->
+        <div class="d-sm-flex justify-content-end">
+          <button
+            type="submit"
+            class="btn btn-primary mb-0"
+            id="save-about-btn"
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Card body END -->
+  </div>
+  <!-- Instructor profile END -->
+
+  <div class="row g-4 mt-3">
+    <!-- EMail change START -->
+    <div class="col-lg-6">
+      <div class="card bg-transparent border rounded-3">
+        <!-- Card header -->
+        <div class="card-header bg-transparent border-bottom">
+          <h5 class="card-header-title mb-0">Update email</h5>
+        </div>
+        <!-- Card body -->
+        <div class="card-body">
+          {% if request.user.email_verified %}
+          <div class="">
+            <p>
+              Your current email address is
+              <span class="text-primary">{{request.user.email}}</span>
+              <i class="bi bi-check-circle-fill text-success fs-5"></i>
+            </p>
+          </div>
+          {% else %}
+          <p>
+            Your current email address is
+            <span class="text-primary">{{request.user.email}}</span>
+          </p>
+          <div class="d-flex justify-content-end mt-4">
+            <button onclick="(confirmEmail(this))" class="btn btn-primary mb-0">
+              Confirm email
+            </button>
+          </div>
+          {% endif %}
+          <br />
+          <!-- Email -->
+          <form>
+            <label class="form-label">Enter your new email id</label>
+            <input
+              class="form-control"
+              type="email"
+              placeholder="Enter new email"
+              id="new_email"
+            />
+            <div class="d-flex justify-content-end mt-4">
+              <button
+                type="button"
+                onclick="saveProfile(this, 'email')"
+                class="btn btn-primary mb-0"
+              >
+                Update email
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- EMail change end -->
+
+    <!-- Password change START -->
+    <div class="col-lg-6">
+      <div class="card border bg-transparent rounded-3">
+        <!-- Card header -->
+        <div class="card-header bg-transparent border-bottom">
+          <h5 class="card-header-title mb-0">Update password</h5>
+        </div>
+        <!-- Card body START -->
+        <div class="card-body">
+          <!-- Current password -->
+          <div class="mb-3">
+            <label class="form-label">Current password</label>
+            <input
+              class="form-control"
+              type="password"
+              id="password"
+              placeholder="Enter current password"
+            />
+          </div>
+          <!-- New password -->
+          <div class="mb-3">
+            <label class="form-label"> Enter new password</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="new_password"
+                type="password"
+                placeholder="Enter new password"
+              />
+              <span class="input-group-text p-0 bg-transparent">
+                <i class="far fa-eye cursor-pointer p-2 w-40px"></i>
+              </span>
+            </div>
+            <div class="rounded mt-1" id="psw-strength"></div>
+          </div>
+          <!-- Confirm password -->
+          <div>
+            <label class="form-label">Confirm new password</label>
+            <input
+              class="form-control"
+              type="password"
+              id="confirm_password"
+              placeholder="Enter new password"
+            />
+          </div>
+          <!-- Button -->
+          <div class="d-flex justify-content-end mt-4">
+            <button
+              type="button"
+              class="btn btn-primary mb-0"
+              onclick="saveProfile(this, 'password')"
+            >
+              Change password
+            </button>
+          </div>
+        </div>
+        <!-- Card body END -->
+      </div>
+    </div>
+    <!-- Password change end -->
+  </div>
+</div>
+{% include 'components/profile-cropper.html' %}
+<script src="/static/js/requests.js"></script>
+<script>
+  async function saveProfile(btn, type) {
+    let data;
+    if (type === "basic_info") {
+      data = {
+        first_name: document.getElementById("f_name").value.trim(),
+        last_name: document.getElementById("l_name").value.trim(),
+        phone_no: document.getElementById("phone_no").value.trim(),
+        location: document.getElementById("location").value.trim(),
+        time_zone: document.getElementById("time_zone").value,
+      };
+    } else if (type === "email") {
+      const email = document.getElementById("new_email").value.trim();
+      if (!email.includes("@") || !email.includes(".") || email.includes(" ")) {
+        showAlert("Email update", "Please enter a valid email.");
+        return;
+      }
+      data = { email: email };
+    } else if (type === "password") {
+      const pwd = document.getElementById("password");
+      const confPwd = document.getElementById("confirm_password");
+      const newPwd = document.getElementById("new_password");
+      if(pwd.value  == '') {
+        showAlert("Password update", "Please enter current password.");
+        return;
+      } else if(newPwd.value == ""){
+        showAlert("Password update", "Please enter new password.");
+        return;
+      } else if (newPwd.value != confPwd.value) {
+        showAlert(
+          "Password update",
+          "Password and confirm password should match."
+        );
+        return;
+      }
+      data = {
+        password: pwd.value,
+        new_password: newPwd.value,
+      };
+    } else return;
+    data.type = type;
+    showBtnLoading(btn);
+    const res = await postToServer("{% url 'user_update' %}", data)
+    hideBtnLoading(btn);
+    res.status ? alertify.success(res.msg) : alertify.error(res.msg);
+  }
+  const confirmEmail = async(btn) => {
+    showBtnLoading(btn);
+    const res = await postToServer("{% url 'send_email_confirmation_link' %}")
+    hideBtnLoading(btn);
+    res.status ? alertify.success(res.msg) : alertify.error(res.msg);
+  }
+  const updateAbout = async() => {
+    const btn = document.getElementById('save-about-btn');
+    const start_time = document.getElementById("start_time").value;
+    const end_time = document.getElementById("end_time").value;
+    if(start_time == '' || end_time == '') {
+      showAlert("Availability Update", "Start time and end time can't be blank.");
+      return false;
+    } else if(checkWrongAvailability(start_time, end_time)) {
+      showAlert("Availability Update", "End time should greater than start time.");
+      return false;
+    }
+    data = {
+      info_type : 'about',
+      about: document.getElementById("about").value.trim(),
+      educations: [],
+      twitter: document.getElementById("twitter").value.trim(),
+      instagram: document.getElementById("instagram").value.trim(),
+      facebook: document.getElementById("facebook").value.trim(),
+      linkedin: document.getElementById("linkedin").value.trim(),
+      youtube: document.getElementById("youtube").value.trim(),
+      start_time: start_time, end_time: end_time,
+    };
+    const educations = document.querySelectorAll('#edu-box input[name="education"]');
+    educations.forEach(education => {
+      data.educations.push({
+        id: education.id ? education.id.split("-")[1] : null,
+        text: education.value,
+      });
+    });
+    // console.log(data);
+    showBtnLoading(btn);
+    const res = await postToServer("", data);
+    hideBtnLoading(btn);
+    res.status ? alertify.success(res.msg) : alertify.error(res.msg);
+  }
+  const addMoreEdu = (e) => {
+    e.preventDefault();
+    const html = `
+    <input
+      class="form-control mb-2"
+      type="text"
+      maxlength="255"
+      name="education"
+      placeholder="Eg. Bachelor in Computer Graphics"
+    />`;
+    document.getElementById('edu-box').insertAdjacentHTML("beforeend", html);
+  }
+  const checkWrongAvailability = (start_time, end_time) => {
+    const start_time_arr = start_time.split(":");
+    const end_time_arr = end_time.split(":");
+    const stHr = parseInt(start_time_arr[0])
+    const stMn = parseInt(start_time_arr[1])
+    const endHr = parseInt(end_time_arr[0])
+    const endMn = parseInt(end_time_arr[1])
+    return ((stHr > endHr) || ((stHr == endHr) && (stMn >= endMn)))
+}
+</script>
+{% endblock content %}

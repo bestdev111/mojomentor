@@ -1,0 +1,173 @@
+{% extends request.layout %} {% block content %}
+<style>
+  button.page-link:disabled {
+    cursor: not-allowed;
+  }
+</style>
+<div class="col-xl-9">  
+    <!-- Appointments List table START -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card border bg-transparent rounded-3">
+          <!-- Card header START -->
+          <div class="card-header bg-transparent border-bottom">
+            <div class="d-sm-flex align-items-center  justify-content-between"> <!-- justify-content-sm-between -->
+              <h3 class="mb-2 mb-sm-0">My Referrals</h3>
+              <!-- <a href="#" class="btn btn-sm btn-primary-soft mb-0">View all</a> -->
+              <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#referralModal">
+                Refer to a friend for getting rewards
+              </button>
+            </div>
+          </div>
+          <!-- Card header END -->
+  
+          <!-- Card body START -->
+          <div class="card-body">
+            <div class="table-responsive border-0 rounded-3">
+              <!-- Table START -->
+              <table class="table table-dark-gray align-middle p-4 mb-0">
+                <!-- Table head -->
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 rounded-start">Sr No.</th>
+                    <th scope="col" class="border-0">Username</th>
+                    <th scope="col" class="border-0 rounded-end">Date joined</th>
+                  </tr>
+                </thead>
+                <!-- Table body START -->
+                <tbody id="table-body">
+                  <!-- Table item -->
+                  <!-- <tr>
+                    <td><b>Building Scalable APIs with GraphQL</b></td>
+                    <td>34</td>
+                    <td>$1,25,478</td>
+                    <td>
+                      <span class="badge bg-primary bg-opacity-10 text-primary"
+                        >9 months</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-sm btn-success-soft btn-round me-1 mb-0" ><i class="far fa-fw fa-edit"></i></a>
+                      <button class="btn btn-sm btn-danger-soft btn-round mb-0">
+                        <i class="fas fa-fw fa-times"></i>
+                      </button>
+                    </td>
+                  </tr> -->
+                </tbody>
+              </table>
+            </div>
+  
+            <!-- Pagination START -->
+            <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3">
+              <!-- Content -->
+              <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+              <!-- Pagination -->
+              <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+                <ul
+                  class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+                >
+                  <li class="page-item mb-0">
+                    <button class="page-link" id="back_btn" onclick="decreasePage()">
+                      <i class="fas fa-angle-left"></i>
+                    </button>
+                  </li>
+                  <li class="page-item mb-0 active">
+                    <button class="page-link" id="page-no">1</button>
+                  </li>
+                  <li class="page-item mb-0">
+                    <button class="page-link" id="next_page" onclick="increasePage()">
+                      <i class="fas fa-angle-right"></i>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- Pagination END -->
+          </div>
+          <!-- Card body START -->
+        </div>
+      </div>
+    </div>
+    <!-- Appointments List table END -->
+</div>
+
+<!-- Popup modal for referral START -->
+<div class="modal fade" id="referralModal" tabindex="-1" aria-labelledby="referralModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title text-white" id="referralModalLabel">Referral</h5>
+        <button type="button" class="btn btn-sm btn-light mb-0" id="closeReferralModal" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-body">
+        <form class="row text-start g-3">
+					<!-- Question -->
+					<div class="col-12">
+            <p>Share below link to your friend to refer Mojomentors.</p>
+            <span style="color: blue;">{{refer_url}}</span>
+					</div>
+				</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Popup modal for referral END -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script src="/static/js/requests.js"></script>
+<script>
+var pageIncBtn = document.getElementById("next_page");
+var pageDecBtn = document.getElementById("back_btn");
+var pageNo = 0;
+var rowCount = 10;
+var pageAvail = 0;
+const loader = `
+<div class="spinner-border m-auto my-5 d-block" id="loader">
+  <span class="visually-hidden">Loading...</span>
+</div>`;
+const loadReferrals = async() => {
+  document.getElementById("table-body").innerHTML = loader;
+  let params = `?no_of_row=${rowCount}&offset=${rowCount * pageNo}`;
+  const result = await getFromServer("{% url 'my_referrals_list' %}" + params);
+  if (result.status) {
+    let dataHtml = '';
+    const rowsAvail = result.data.rows.length;
+    let counter = 0;
+    result.data.rows.forEach(row => {
+      counter++;
+      dataHtml += `<tr id="${row[0]}">
+        <td>${counter}</td><td>${row[1]}</td><td>${fromatToDateTime(row[2].split('.')[0])}</td>
+      </tr>`;
+    });
+    document.getElementById('table-body').innerHTML = dataHtml;
+    pageAvail = parseInt(result.data.count / rowCount);
+    pageDecBtn.disabled = pageNo > 0 ? false : true;
+    pageIncBtn.disabled = pageNo < pageAvail ? false : true;
+    document.getElementById("page-no").innerHTML = pageNo + 1;
+    document.getElementById("entries_details").innerHTML = `Showing ${
+      rowCount * pageNo + 1
+    } to ${rowCount * pageNo + rowsAvail} of ${result.data.count} entries`;
+  } else {
+    alertify.error(result.msg);
+    document.getElementById("table-body").innerHTML = "";
+  }
+}
+const decreasePage = () => {
+  if (pageNo > 0) {
+    pageNo--;
+    loadReferrals();
+  }
+};
+const increasePage = () => {
+  if (pageNo < pageAvail) {
+    pageNo++;
+    loadReferrals();
+  }
+};
+loadReferrals();
+</script>
+<script src="/static/js/appoint-reviews.js"></script>
+{% endblock content %}

@@ -1,0 +1,188 @@
+{% extends 'layouts/home-layout.html' %}
+{% block content %}
+<!-- =======================
+Main Content START -->
+<section class="pb-0 pt-4 pb-md-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+
+				<!-- Title and Info START -->
+				<div class="row">
+					<!-- Avatar and Share -->
+					<div class="col-lg-3 align-items-center mt-4 mt-lg-5 order-2 order-lg-1">
+						<div class="text-lg-center">
+							<!-- Author info -->
+							<div class="position-relative">
+								<!-- Avatar -->
+								<div class="avatar avatar-xxl">
+									<img class="avatar-img rounded-circle" src="/static/images/avatar/09.jpg" alt="avatar">
+								</div>
+								<a href="#" class="h5 stretched-link mt-2 mb-0 d-block">@{{blog.user.username}}</a>
+								<p class="mb-2">Editor at Eduport</p>
+							</div>
+							<!-- Info -->
+							<ul class="list-inline list-unstyled">
+								<li class="list-inline-item d-lg-block my-lg-2">{{blog.created_on}}</li>
+								<li class="list-inline-item d-lg-block my-lg-2">5 min read</li>
+								<li class="list-inline-item badge text-bg-orange"><i class="far text-white fa-heart me-1"></i>266</li>
+								<li class="list-inline-item badge text-bg-info"><i class="far fa-eye me-1"></i>2K</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- Content -->
+					<div class="col-lg-9 order-1">
+						<!-- Pre title -->
+						{% comment %} <span>40D ago</span><span class="mx-2">|</span><div class="badge text-bg-success">Research</div> {% endcomment %}
+						<!-- Title -->
+						<h1 class="mt-2 mb-0 display-5">{{blog.title}}</h1>
+						<!-- Info -->
+						<p class="mt-2">{{blog.about}}</p>
+					</div>
+				</div>
+				<!-- Title and Info END -->
+
+				<!-- Video START -->
+				<div class="row mt-4">
+					<div class="col-xl-10 mx-auto">
+						<!-- Card item START -->
+						{% comment %} <div class="card overflow-hidden h-200px h-sm-300px h-lg-400px h-xl-500px rounded-3 text-center" style="background-image:url(/static/images/event/10.jpg); background-position: center left; background-size: cover;">
+							<!-- Card Image overlay -->
+							<div class="bg-overlay bg-dark opacity-4"></div>
+							<div class="card-img-overlay d-flex align-items-center p-2 p-sm-4"> 
+								<div class="w-100 my-auto">
+									<div class="row justify-content-center">
+										<!-- Video -->
+										<div class="col-12">
+											<a href="https://www.youtube.com/embed/tXHviS-4ygo" class="btn btn-lg text-danger btn-round btn-white-shadow stretched-link position-static mb-0" data-glightbox="" data-gallery="video-tour">
+												<i class="fas fa-play"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> {% endcomment %}
+						{% if blog.video %}
+						<div class="w-100">
+							<video controls width="100%" height="auto" controlsList="nodownload">
+								<source src="{{blog.video.url}}" type="video/mp4">
+								<!-- <a href="/media/cc0-videos/flower.mp4">MP4</a> -->
+							</video>
+						</div>
+						{% elif blog.image %}
+						<div class="w-100">
+							<img src="{{blog.image.url}}" />
+						</div>
+						{% endif %}
+						<!-- Card item END -->
+					</div>
+				</div>
+				<!-- Video END -->
+				<br />
+				<!-- Quote and content START -->
+				{% autoescape off %}{{blog.body}}{% endautoescape %}
+				<!-- Quote and content END -->
+
+				<hr> <!-- Divider -->
+			</div>
+		</div> <!-- Row END -->
+	</div>
+</section>
+<!-- =======================
+Main Content END -->
+
+<!-- =======================
+Related blog START -->
+<section class="pt-0">
+	<div class="container">
+    <!-- Title -->
+		<div class="row mb-4">
+			<div class="col-12">
+			<h2 class="mb-0">You may also like</h2>
+			</div>
+		</div>
+		
+		<!-- Slider START -->
+		<div class="tiny-slider arrow-round arrow-hover arrow-dark">
+			<div class="tiny-slider-inner" data-autoplay="false" data-arrow="true" data-edge="2" data-dots="false" data-items="3" data-items-lg="2" data-items-sm="1">
+				
+				<!-- Slider item -->
+				<div class="card bg-transparent">
+					<div class="row g-0">
+						<!-- Image -->
+						<div class="col-md-4">
+							<img src="/static/images/event/06.jpg" class="img-fluid rounded-start" alt="...">
+						</div>
+						<!-- Card body -->
+						<div class="col-md-8">
+							<div class="card-body">
+								<!-- Title -->
+								<h6 class="card-title"><a href="#">Dirty little secrets about the business industry</a></h6>
+								<span class="small">July 21, 2021</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Slider item -->
+				<div class="card bg-transparent">
+					<div class="row g-0">
+						<!-- Image -->
+						<div class="col-md-4">
+							<img src="/static/images/event/04.jpg" class="img-fluid rounded-start" alt="...">
+						</div>
+						<!-- Card body -->
+						<div class="col-md-8">
+							<div class="card-body">
+								<!-- Title -->
+								<h6 class="card-title"><a href="#">This is why this year will be the year of startups</a></h6>
+								<span class="small">50min ago</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Slider item -->
+				<div class="card bg-transparent">
+					<div class="row g-0">
+						<!-- Image -->
+						<div class="col-md-4">
+							<img src="/static/images/event/03.jpg" class="img-fluid rounded-start" alt="...">
+						</div>
+						<!-- Card body -->
+						<div class="col-md-8">
+							<div class="card-body">
+								<!-- Title -->
+								<h6 class="card-title"><a href="#">Covid-19 and the college experienced</a></h6>
+								<span class="small">Aug 31, 2021</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Slider item -->
+				<div class="card bg-transparent">
+					<div class="row g-0">
+						<!-- Image -->
+						<div class="col-md-4">
+							<img src="/static/images/event/05.jpg" class="img-fluid rounded-start" alt="...">
+						</div>
+						<!-- Card body -->
+						<div class="col-md-8">
+							<div class="card-body">
+								<!-- Title -->
+								<h6 class="card-title"><a href="#">This is why this year will be the year of startups</a></h6>
+								<span class="small">50min ago</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Slider END -->
+	</div>
+</section>
+<!-- =======================
+Related blog END -->
+{% endblock content %}

@@ -1,0 +1,54 @@
+{% extends 'layouts/admin-layout.html' %} {% block content %}
+<div class="page-content-wrapper border">
+
+    <!-- Code -->
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Coupon</h1>
+            <a href="{% url 'ad_coupons' %}" class="btn btn-sm btn-primary mb-0">Back to Coupon list</a>
+        </div>
+    </div>
+
+    <!-- Card START -->
+    <div class="card bg-transparent border">
+        <!-- Card body START -->
+        <div class="card-body">
+            <!-- Course table START -->
+            <form class="row g-4 align-items-center" method="POST">
+                {% csrf_token %}
+                <div class="col-lg-6">
+                    <label class="form-label" for="code">Code</label>
+                    <input type="text" maxlength="15" required name="code"  value="{{coupon.code}}" class="form-control" placeholder="Code">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="percent">Percent</label>
+                    <input type="number" min="0" max="100" required  value="{{coupon.percent}}" name="percent" class="form-control" placeholder="Percent">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="exp_date">Exp. date</label>
+                    <input type="date" required  value="{{coupon.exp_date}}" name="exp_date" class="form-control" placeholder="Exp. date">
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label" for="status">Status</label>
+                    <select name="status" id="status" class="form-control" required>
+                        <option value="1" {% if coupon.status == True %}selected{% endif %}>Active</option>
+                        <option value="0" {% if coupon.status == False %}selected{% endif %}>InActive</option>
+                    </select>
+                </div>
+                <div class="d-sm-flex justify-content-end">
+                    <button type="button" onclick="history.back()" class="btn btn-danger mb-0">Cancel</button>
+                    &nbsp;&nbsp;
+                    {% if coupon %}
+                    <button type="submit" class="btn btn-primary mb-0">Update</button>
+                    {% else %}
+                    <button type="submit" class="btn btn-primary mb-0">Save</button>
+                    {% endif %}
+                </div>
+            </form>
+            <!-- Course table END -->
+        </div>
+        <!-- Card body END -->
+    </div>
+    <!-- Card END -->
+</div>
+{% endblock content %}

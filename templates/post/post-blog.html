@@ -1,0 +1,97 @@
+{% extends request.layout %} {% block content %}
+<div class="col-xl-9">
+  <div class="card bg-transparent border rounded-3">
+    <div class="card-header bg-transparent border-bottom">
+      <h3 class="mb-0">{% if blog %}Edit{% else %}Post{% endif %} a Blog</h3>
+    </div>
+    <div class="Card-body">
+      <form class="border 0 p-4" method="POST" id="form" onsubmit="event.preventDefault(); submitBlog();"  enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-12">
+          <label class="form-label">Title</label>
+          <input
+            type="text"
+            class="form-control mb-2"
+            name="title"
+            id="title"
+            value="{{blog.title}}"
+            required
+            maxlength="200"
+          />
+        </div>
+        <div class="col-12">
+          <label class="form-label">About</label>
+          <textarea name="about" id="about" rows="3" class="form-control mb-2" required>{{blog.about}}</textarea>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Image</label>
+          <input
+            type="file"
+            class="form-control mb-2"
+            name="image"
+            id="image"
+            accept="image/*"
+            {% if not blog.image %}required{% endif %}
+          />
+          {% if blog.image %}
+          <div class="form-text text-end">
+            <a href="{{blog.image.url}}" target="_blank">Here the last uploaded file.</a>
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-12">
+          <label class="form-label">Video</label>
+          <input
+            type="file"
+            class="form-control mb-2"
+            name="video"
+            id="video"
+            accept="video/*"
+          />
+          {% if blog.video %}
+          <div class="form-text text-end">
+            <a href="{{blog.video.url}}" target="_blank">Here the last uploaded file.</a>
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-12">
+          <label class="form-label">Body</label>
+          <textarea class="form-control mb-2" name="body" id="body">
+{{blog.body}}</textarea
+          >
+        </div>
+        <div class="d-sm-flex justify-content-end mt-3">
+          <button type="submit" class="btn btn-primary mb-0">
+            Post Blog
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script
+  src="https://cdn.tiny.cloud/1/mk4hwd62ffubr9yl8ajk2bgpkm9b42m7ltbswjiu7r2fx51s/tinymce/6/tinymce.min.js"
+  referrerpolicy="origin"
+></script>
+<script>
+  tinymce.init({
+    selector: "textarea#body",
+    // content_css: "/static/styles/tinymce-defalut.css",
+    height: 345,
+    plugins:
+      "print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons",
+    imagetools_cors_hosts: ["picsum.photos"],
+    menubar: "file edit view insert format tools table help",
+    toolbar:
+      "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
+  });
+  const submitBlog = () => {
+    tinymce.triggerSave();
+    if (document.getElementById("body").value == "") {
+      alert("Please fill some text in body to Proceed");
+      return;
+    }
+    document.getElementById("form").submit();
+  };
+</script>
+{% endblock content %}

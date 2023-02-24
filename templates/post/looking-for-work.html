@@ -1,0 +1,121 @@
+{% extends request.layout %} {% block content %}
+<style>
+  button.page-link:disabled {
+    cursor: not-allowed;
+  }
+</style>
+<div class="col-xl-9">
+  
+  <div class="card bg-transparent border rounded-3">
+    <!-- Card header START -->
+    <div class="card-header d-flex justify-content-between border-bottom">
+      <h3 class="mb-0">Looking for a work</h3>
+      <a href="{% url 'post_looking_for_work' %}" class="btn btn-sm btn-success">
+        Post work requirement
+      </a>
+    </div>
+    <!-- Card header END -->
+
+    <!-- Card body START -->
+    <div class="card-body">
+      
+      <!-- Course list table START -->
+      <div class="table-responsive border-0" id="posts"></div>
+      <!-- Course list table END -->
+
+      <!-- Pagination START -->
+      <div
+        class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3"
+      >
+        <!-- Content -->
+        <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+        <!-- Pagination -->
+        <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+          <ul
+            class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+          >
+            <li class="page-item mb-0">
+              <button class="page-link" id="back_btn" onclick="decreasePage()">
+                <i class="fas fa-angle-left"></i>
+              </button>
+            </li>
+            <li class="page-item mb-0 active">
+              <button class="page-link" id="page-no">1</button>
+            </li>
+            <li class="page-item mb-0">
+              <button class="page-link" id="next_page" onclick="increasePage()">
+                <i class="fas fa-angle-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Pagination END -->
+    </div>
+    <!-- Card body START -->
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script src="/static/js/requests.js"></script>
+<script>
+  var pageIncBtn = document.getElementById("next_page");
+  var pageDecBtn = document.getElementById("back_btn");
+  var pageNo = 0;
+  var rowCount = 10;
+  var pageAvail = 0;
+  const loader = `
+    <div class="spinner-border m-auto my-5 d-block" id="loader">
+      <span class="visually-hidden">Loading...</span>
+    </div>`;
+  const loadPosts = async () => {
+    document.getElementById("posts").innerHTML = loader;
+    let params = `?no_of_row=${rowCount}&offset=${rowCount * pageNo}`;
+    const res = await getFromServer("{% url 'looking_for_work_list' %}" + params);
+    let dataHtml = "";
+    if (res.status) {
+      const data = res.data;
+      const rowsAvail = data.rows.length;
+      if (rowsAvail > 0) {
+        data.rows.forEach((row, rowIndex) => {
+          dataHtml += `
+          <div class="card border rounded-3 my-3" id="q-${row[0]}">
+            <div class="card-header border-bottom d-flex justify-content-between flex-wrap">
+              <h6 class="my-0">@${row[2]}</h6>
+              <b>${fromatToDateTime(row[5].split('.')[0])}</b>
+            </div>
+            <div class="card-body">
+              <h5>${row[3]}</h5>
+              <div>${row[4]}</div>
+            </div>
+            {% comment %} <div class="card-footer border-top"></div> {% endcomment %}
+          </div>`;
+        });
+      }
+      document.getElementById("posts").innerHTML = dataHtml;
+      pageAvail = parseInt(data.count / rowCount);
+      pageDecBtn.disabled = pageNo > 0 ? false : true;
+      pageIncBtn.disabled = pageNo < pageAvail ? false : true;
+      document.getElementById("page-no").innerHTML = pageNo + 1;
+      document.getElementById("entries_details").innerHTML = `Showing ${
+        rowCount * pageNo + 1
+      } to ${rowCount * pageNo + rowsAvail} of ${data.count} entries`;
+    } else {
+      document.getElementById("posts").innerHTML = "";
+    }
+  };
+  const decreasePage = () => {
+    if (pageNo > 0) {
+      pageNo--;
+      loadPosts();
+    }
+  };
+  const increasePage = () => {
+    if (pageNo < pageAvail) {
+      pageNo++;
+      loadPosts();
+    }
+  };
+  // --------------- Call table reload ---------------
+  loadPosts();
+</script>
+{% endblock content %}

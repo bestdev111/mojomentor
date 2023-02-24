@@ -1,0 +1,142 @@
+{% extends request.layout %} {% block content %}
+<style>
+  button.page-link:disabled {
+    cursor: not-allowed;
+  }
+</style>
+<div class="col-xl-9">  
+    <!-- Courses List table START -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card border bg-transparent rounded-3">
+          <!-- Card header START -->
+          <div class="card-header bg-transparent border-bottom">
+            <div class="d-sm-flex align-items-center"> <!-- justify-content-sm-between -->
+              <h3 class="mb-2 mb-sm-0">My courses</h3>
+              <!-- <a href="#" class="btn btn-sm btn-primary-soft mb-0">View all</a> -->
+            </div>
+          </div>
+          <!-- Card header END -->
+  
+          <!-- Card body START -->
+          <div class="card-body">
+            <div class="table-responsive border-0 rounded-3">
+              <!-- Table START -->
+              <table class="table table-dark-gray align-middle p-4 mb-0">
+                <!-- Table head -->
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 rounded-start">Sr. No</th>
+                    <th scope="col" class="border-0">Title</th>
+                    <th scope="col" class="border-0">Category</th>
+                    <th scope="col" class="border-0">Puchased date</th>
+                    <th scope="col" class="border-0 rounded-end">Action</th>
+                  </tr>
+                </thead>
+                <!-- Table body START -->
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+  
+            <!-- Pagination START -->
+            <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3">
+              <!-- Content -->
+              <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+              <!-- Pagination -->
+              <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+                <ul
+                  class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+                >
+                  <li class="page-item mb-0">
+                    <button class="page-link" id="back_btn" onclick="decreasePage()">
+                      <i class="fas fa-angle-left"></i>
+                    </button>
+                  </li>
+                  <li class="page-item mb-0 active">
+                    <button class="page-link" id="page-no">1</button>
+                  </li>
+                  <li class="page-item mb-0">
+                    <button class="page-link" id="next_page" onclick="increasePage()">
+                      <i class="fas fa-angle-right"></i>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- Pagination END -->
+          </div>
+          <!-- Card body START -->
+        </div>
+      </div>
+    </div>
+    <!-- Courses List table END -->
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script src="/static/js/requests.js"></script>
+<script>
+var pageIncBtn = document.getElementById("next_page");
+var pageDecBtn = document.getElementById("back_btn");
+var pageNo = 0;
+var rowCount = 10;
+var pageAvail = 0;
+const loader = `
+<div class="spinner-border m-auto my-5 d-block" id="loader">
+  <span class="visually-hidden">Loading...</span>
+</div>`;
+const loadCourses = async() => {
+  document.getElementById("table-body").innerHTML = loader;
+  let params = `?no_of_row=${rowCount}&offset=${rowCount * pageNo}`;
+  const result = await getFromServer("{% url 'stu_course_list' %}" + params);
+  if (result.status) {
+    let dataHtml = '';
+    const rowsAvail = result.data.rows.length;
+    let no = 0;
+    result.data.rows.forEach(row => {
+      no++;
+      // console.log(row);
+      let action = '';
+      // if (row[7] === 0 && row[8] === false) {
+      //   action += `<p class="text-primary mb-0">Pending</p>`;
+      // } else {
+      //   if (row[7] == 1) action += `<p class="text-success mb-0">Accepted</p>`;
+      //   else if(row[7] == 2) action += `<p class="text-danger mb-0">Declined</p>`;
+      //   else if(row[8]) action += `<button class="btn btn-sm btn-success-soft mb-0" title="See modify request" onclick="modifyAppointment(${row[0]}, this)">See request</button>`;
+      // }
+      
+      dataHtml += `<tr id="${row[0]}">
+        <td>${no}</td>
+        <td>${row[2]}</td>
+        <td>${row[3]}</td>
+        <td>${fromatToDateTime(row[4].split('.')[0])}</td>
+        <td>${action}</td>
+      </tr>`;
+    });
+    document.getElementById('table-body').innerHTML = dataHtml;
+    pageAvail = parseInt(result.data.count / rowCount);
+    pageDecBtn.disabled = pageNo > 0 ? false : true;
+    pageIncBtn.disabled = pageNo < pageAvail ? false : true;
+    document.getElementById("page-no").innerHTML = pageNo + 1;
+    document.getElementById("entries_details").innerHTML = `Showing ${
+      rowCount * pageNo + 1
+    } to ${rowCount * pageNo + rowsAvail} of ${result.data.count} entries`;
+  } else {
+    alertify.error(result.msg);
+    document.getElementById("table-body").innerHTML = "";
+  }
+}
+const decreasePage = () => {
+  if (pageNo > 0) {
+    pageNo--;
+    loadCourses();
+  }
+};
+const increasePage = () => {
+  if (pageNo < pageAvail) {
+    pageNo++;
+    loadCourses();
+  }
+};
+loadCourses();
+</script>
+{% endblock content %}

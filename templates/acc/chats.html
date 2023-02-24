@@ -1,0 +1,275 @@
+{% extends 'layouts/no-sidebar-layout.html' %} {% load static %} {% block styles %}
+<!-- custom CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/chats.css' %}?v=0.02">
+<style>
+	.hide-dots {
+		visibility: hidden;
+	}
+	.display-dots {
+		visibility: unset;
+	}
+	.snippet {
+		margin-left: 30px;
+		padding: 8px;
+	}
+	.dot-flashing {
+		position: relative;
+		width: 8px;
+		height: 8px;
+		border-radius: 5px;
+		background-color: #646368;
+		color: #646368;
+		animation: dot-flashing 0.6s infinite linear alternate;
+		animation-delay: 0.2s;
+	}
+	.dot-flashing::before, .dot-flashing::after {
+		content: "";
+		display: inline-block;
+		position: absolute;
+		top: 0;
+	}
+	.dot-flashing::before {
+		left: -15px;
+		width: 8px;
+		height: 8px;
+		border-radius: 5px;
+		background-color: #646368;
+		color: #646368;
+		animation: dot-flashing 0.6s infinite alternate;
+		animation-delay: 0s;
+	}
+	.dot-flashing::after {
+		left: 15px;
+		width: 8px;
+		height: 8px;
+		border-radius: 5px;
+		background-color: #646368;
+		color: #646368;
+		animation: dot-flashing 0.6s infinite alternate;
+		animation-delay: 0.2s;
+	}
+
+	@keyframes dot-flashing {
+		0% {
+			background-color: #646368;
+		}
+		50% {
+			background-color: #55545888;
+		}
+		100% {
+			background-color: #5e5d6175;
+		}
+	}
+</style>
+{% endblock styles %} {% block content %}
+
+<!-- =======================
+Page content START -->
+<section class="pt-0">
+	<div class="container">
+		<div class="row">
+
+			<!-- Left sidebar START -->
+			<div class="col-xl-3">
+				<!-- Responsive offcanvas body START -->
+				<div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+					<!-- Offcanvas header -->
+					<div class="offcanvas-header bg-light">
+						<h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+						<button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+					</div>
+					<!-- Offcanvas body -->
+					<div class="offcanvas-body p-3 p-xl-0">
+						<div class="border rounded-3 p-3 w-100">
+							<!-- Dashboard menu -->
+							<div class="list-group list-group-dark list-group-borderless" style="height: 78vh">
+							  {% for user in users %}
+							  <div class="d-flex p-2 chat-user" id="u-{{user.0}}" data-loaded="0" style="cursor:pointer;" onclick="changeUser({{user.0}},'{{user.1}}')">
+								<div><img id="profile-{{user.0}}" src="{% if user.2 %}/media/{{user.2}}{% else %}{% static 'images/user.png' %}{% endif %}" style="width: 45px;border-radius: 25px;"></div>&nbsp;
+								<div>
+									<h5 class="mb-0 uname">{{user.1}}</h5>
+									<p class="mb-0">This is last message</p>
+								</div>
+							  </div>
+							  {% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Responsive offcanvas body END -->
+			</div>
+			<!-- Left sidebar END -->
+
+			<!-- Main content START -->
+			<div class="col-xl-9">
+
+				<div class="card bg-transparent border rounded-3">
+					<!-- Card header START -->
+					<div class="card-header bg-transparent border-bottom">
+						<h3 class="mb-0" id="to-username">
+							<img src="/static/images/avatar/man.png" style="width: 45px;border-radius: 25px;"> Username
+						</h3>
+					</div>
+					<!-- Card header END -->
+
+					<!-- Card body START -->
+					<div class="card-body" style="padding:0">
+
+						<!-- Course list table START -->
+						{% for user in users %}
+						<div class="border-0 chats" id="chats-{{user.0}}" style="height: 60vh;overflow: auto;padding: 10px 20px;display:none;">
+							<!-- <div class="chat receiver">
+								<img src="/static/images/avatar/man.png" alt="avatar 1">
+								<div class="snippet" data-title="dot-flashing">
+									<div class="stage">
+										<div class="dot-flashing"></div>
+									</div>
+								</div>
+								<div><p>Hello and thank you for visiting MDBootstrap. Please click the video below.</p></div>
+							</div>
+							<div class="chat sender">
+								<div> <p>Thank you, I really like your product.</p> </div>
+								<img src="/static/images/avatar/man.png" alt="avatar 1">
+							</div> -->
+						</div>
+						{% endfor %}
+						<!-- Course list table END -->
+						<div id="three_dots"></div>
+						<!-- Pagination START -->
+						<div class="card-footer justify-content-start align-items-center p-3 border-top">
+							<textarea class="form-control chat-text" style="height: 65px;" placeholder="Type message" id="msg-field" onkeypress="return handleMsgByEnter(event, this)"></textarea>
+							<!--  -->
+							<!-- <div class="snippet" data-title="dot-flashing">
+								<div class="stage">
+									<div class="dot-flashing"></div>
+								</div>
+							</div> -->
+							<!--  -->
+							<div class="d-flex mt-2 justify-content-between">
+								<div style="position: relative;">
+									<div class="emojis" id="emojis" style="display: none;">
+										<!-- <button class="emoji">😀</button> -->
+									</div>
+									<button class="i-btn" onclick="openEmojis()"><i class="fas fa-smile"></i></button>
+									<input type="file" style="display: none;" onchange="changeFile(this)" id="file_input">
+									<button class="i-btn" onclick="document.getElementById('file_input').click()"><i class="fas fa-paperclip"></i></button>
+								</div>
+								<button class="btn btn-success-soft mb-0" id="send-btn" onclick="handleMsg()">
+									<i class="fas fa-paper-plane"></i> Send
+								</button>
+							</div>
+						</div>
+						<!-- Pagination END -->
+					</div>
+					<!-- Card body START -->
+				</div>
+			<!-- Main content END -->
+			</div><!-- Row END -->
+		</div>
+	</div>	
+</section>
+<!-- =======================
+Page content END -->
+
+<div id="toasts"></div>
+<div class="popup" id="file-upload-progress">
+	<div class="overlay" onclick="//this.parentNode.style.display='none'"></div>
+	<div class="content">
+		<h4 class="text-center">File Uploading</h4>
+		<!-- <i id="close-btn" class="bi bi-x-lg"></i> -->
+        <div class="divider"></div>
+		<h6 class="text-center" id="progress">50%</h6>
+		<h6 class="text-center">Completed</h6>
+	</div>
+</div>
+{% endblock content %} {% block scripts %}
+<!-- Custom js -->
+<script src="{% static 'js/requests.js' %}?v=0.01"></script>
+<script src="{% static 'js/chats.js' %}?v=0.04"></script>
+<script src="{% static 'js/ws.js' %}?v=0.01"></script>
+<script>
+	var selectedUser = null;
+	const currUserPic = "{% if request.user.profile_pic %}{{request.user.profile_pic.url}}{% else %}{% static 'images/user.png' %}{% endif %}";
+	var to = 0;
+	const chat_text = document.querySelector('.chat-text');
+	chat_text.addEventListener('input', (event) => {
+		sendData(to, -1, '')
+	});
+	const msgField = document.getElementById('msg-field');
+	const sendBtn = document.getElementById('send-btn');
+	const toUsername = document.getElementById('to-username');
+	const fileUploadProgress = document.getElementById("file-upload-progress");
+	const handleMsg = () => {
+		const msgText = msgField.value.trim();
+		msgField.focus();
+		if(msgText == '') return;
+		sendData(to, 0, msgText)
+		msgField.value = '';
+	}
+	const handleMsgByEnter = (e, obj)=> {
+		const msgText = obj.value.trim();
+		if(msgText == '') return;
+		const x = e.which || e.keycode;
+		if (x == 13 && !e.shiftKey) {
+			sendData(to, 0, msgText);
+			obj.value = '';
+			return false;
+		}
+		else return true;
+	}
+	const openEmojis = () => {
+		let emojisBox= document.getElementById('emojis');
+		emojisBox.style.display = emojisBox.style.display === 'none' ? 'flex' : 'none';
+	}
+	const changeUser = (id, uname) => {
+		if (to !== 0) {
+			document.getElementById('u-' + to).classList.remove('active');
+			document.getElementById("chats-"+to).style.display = 'none';
+		}
+		to = id;
+		selectedUser = id;
+		const user = document.getElementById('u-' + id);
+		user.classList.add('active');
+		let profileImg = document.getElementById(`profile-${id}`);
+		profileImg = (profileImg && profileImg.src) ? profileImg.src : '{% static 'images/user.png' %}';
+		toUsername.innerHTML = `<img src="${profileImg}" style="width: 45px;border-radius: 25px;"> ${uname}`;
+		document.getElementById("chats-"+id).style.display = 'block';
+		if(user.getAttribute('data-loaded') == '0') {
+			user.setAttribute('data-loaded', '1');
+			loadChats(id);
+		}
+	}
+	const changeFile = (obj) => {
+		if (obj.files && obj.files[0]) {
+			const formdata = new FormData();
+			formdata.append("file", obj.files[0]);
+			const progressHandler = (event) => {
+				console.log('event',event);
+				const percent = (event.loaded / event.total) * 100;
+				fileUploadProgress.querySelector('#progress').innerHTML= Math.round(percent) + "%";
+			}
+			fileUploadProgress.querySelector('#progress').innerHTML= '0%';
+			fileUploadProgress.style.display = "flex";
+			const completeHandler = (event) => {
+				fileUploadProgress.style.display = "none";
+				alertify.success("File uploaded successfully.");
+				const res = JSON.parse(event.currentTarget.response);
+				console.log('res.data.file_path',res.data.file_path);
+				sendData(to, 1, res.data.file_path);
+			}
+			const errorHandler = (event) => {
+				fileUploadProgress.style.display = "none";
+				alertify.error("Something went wrong.");
+				console.log('errorHandler',event);
+			}
+			const abortHandler = (event) => {
+				fileUploadProgress.style.display = "none";
+				alertify.error("Something went wrong.");
+				console.log('abortHandler',event);
+			}
+			uploadFileForm("/account/chat-file-upload", formdata, progressHandler, completeHandler, errorHandler, abortHandler)
+		}
+	}
+	{% if users|length > 0 %}changeUser({{users.0.0}}, '{{users.0.1}}');{% endif %}
+</script>
+{% endblock scripts %}

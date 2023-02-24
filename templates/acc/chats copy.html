@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Mojomentors</title>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Mojomentors">
+	<meta name="csrf-token" content="{{ csrf_token }}" />
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="/static/images/favicon.ico">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap">
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="/static/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap-icons/bootstrap-icons.css">
+	<link rel="stylesheet" type="text/css" href="/static/vendor/choices/css/choices.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/vendor/aos/aos.css">
+
+	<!-- Theme CSS -->
+	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+	<!-- custom CSS -->
+	<link rel="stylesheet" type="text/css" href="/static/libraries/alertify.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/css/chats.css">
+
+</head>
+
+<body>
+
+<!-- Header START -->
+<header class="navbar-light navbar-sticky">
+	<!-- Logo Nav START -->
+	<nav class="navbar navbar-expand-xl">
+		<div class="container">
+			<!-- Logo START -->
+			<a class="navbar-brand" href="{% url 'home' %}">
+				<img class="light-mode-item navbar-brand-item" src="/static/images/logo.svg" alt="logo">
+				<img class="dark-mode-item navbar-brand-item" src="/static/images/logo-light.svg" alt="logo">
+			</a>
+			<!-- Logo END -->
+
+			<!-- Responsive navbar toggler -->
+			<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+			<!-- Main navbar START -->
+			<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+				<!-- Nav Main menu START -->
+				<ul class="navbar-nav navbar-nav-scroll mx-auto">
+					
+					<!-- Nav item 2 Pages -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
+							
+							<li> <a class="dropdown-item" href="{% url 'about_us' %}">About Us</a></li>
+							<li> <a class="dropdown-item" href="{% url 'contact_us' %}">Contact Us</a></li>
+							<li> <a class="dropdown-item" href="{% url 'blogs' %}">Blogs</a></li>
+							{% comment %} <li> <a class="dropdown-item" href="workshop-detail.html">Workshop Detail<span class="badge bg-success ms-2 smaller">New</span></a></li> {% endcomment %}
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Shop</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li> <a class="dropdown-item" href="shop.html">Shop grid</a></li>
+									<li> <a class="dropdown-item" href="shop-product-detail.html">Product detail</a></li>
+									<li> <a class="dropdown-item" href="cart.html">Cart</a></li>
+									<li> <a class="dropdown-item" href="checkout.html">Checkout</a></li>
+									<li> <a class="dropdown-item" href="empty-cart.html">Empty Cart</a></li>
+									<li> <a class="dropdown-item" href="wishlist.html">Wishlist</a></li>
+								</ul>
+							</li>
+
+							<li> <a class="dropdown-item" href="{% url 'faqs' %}">FAQs</a></li>
+						</ul>
+					</li>
+
+					<!-- Nav item 3 Account -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+						<ul class="dropdown-menu" aria-labelledby="accounntMenu">
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>Instructor</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li> <a class="dropdown-item" href="instructor-dashboard.html"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
+									<li> <a class="dropdown-item" href="instructor-manage-course.html"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
+									<li> <a class="dropdown-item" href="instructor-create-course.html"><i class="bi bi-file-earmark-plus-fill fa-fw me-1"></i>Create Course</a> </li>
+									<li> <a class="dropdown-item" href="course-added.html"><i class="bi bi-file-check-fill fa-fw me-1"></i>Course Added</a> </li>
+									<li> <a class="dropdown-item" href="instructor-quiz.html"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
+									<li> <a class="dropdown-item" href="instructor-earning.html"><i class="fas fa-chart-line fa-fw me-1"></i>Earnings</a> </li>
+									<li> <a class="dropdown-item" href="instructor-studentlist.html"><i class="fas fa-user-graduate fa-fw me-1"></i>Students</a> </li>
+									<li> <a class="dropdown-item" href="instructor-order.html"><i class="bi bi-cart-check-fill fa-fw me-1"></i>Orders</a> </li>
+									<li> <a class="dropdown-item" href="instructor-review.html"><i class="bi bi-star-fill fa-fw me-1"></i>Reviews</a> </li>
+									<li> <a class="dropdown-item" href="instructor-payout.html"><i class="fas fa-wallet fa-fw me-1"></i>Payout</a> </li>
+								</ul>
+							</li>
+
+							<!-- Dropdown submenu -->
+								<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>Student</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li> <a class="dropdown-item" href="student-dashboard.html"><i class="bi bi-grid-fill fa-fw me-1"></i>Dashboard</a> </li>
+									<li> <a class="dropdown-item" href="student-subscription.html"><i class="bi bi-card-checklist fa-fw me-1"></i>My Subscriptions</a> </li>
+									<li> <a class="dropdown-item" href="student-course-list.html"><i class="bi bi-basket-fill fa-fw me-1"></i>Courses</a> </li>
+									<li> <a class="dropdown-item" href="student-course-resume.html"><i class="far fa-fw fa-file-alt me-1"></i>Course Resume</a> </li>
+									<li> <a class="dropdown-item" href="student-quiz.html"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz </a> </li>
+									<li> <a class="dropdown-item" href="student-payment-info.html"><i class="bi bi-credit-card-2-front-fill fa-fw me-1"></i>Payment Info</a> </li>
+									<li> <a class="dropdown-item" href="student-bookmark.html"><i class="fas bi-cart-check-fill fa-fw me-1"></i>Wishlist</a> </li>
+								</ul>
+							</li>
+							
+							<li> <a class="dropdown-item" href="admin-dashboard.html"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a> </li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> <a class="dropdown-item" href="instructor-edit-profile.html"><i class="fas fa-fw fa-edit me-1"></i>Edit Profile</a> </li>
+							<li> <a class="dropdown-item" href="instructor-setting.html"><i class="fas fa-fw fa-cog me-1"></i>Settings</a> </li>
+							{% comment %} <li> <a class="dropdown-item" href="instructor-delete-account.html"><i class="fas fa-fw fa-trash-alt me-1"></i>Delete Profile</a> </li> {% endcomment %}
+							
+							<li> <hr class="dropdown-divider"></li>
+							<!-- Dropdown Level -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Dropdown levels</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+
+									<!-- dropdown submenu open right -->
+									<li class="dropdown-submenu dropend">
+										<a class="dropdown-item dropdown-toggle" href="#">Dropdown (end)</a>
+										<ul class="dropdown-menu" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+
+									<!-- dropdown submenu open left -->
+									<li class="dropdown-submenu dropstart">
+										<a class="dropdown-item dropdown-toggle" href="#">Dropdown (start)</a>
+										<ul class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+
+				</ul>
+				<!-- Nav Main menu END -->
+
+				<!-- Nav Search START -->
+				<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+					<div class="nav-item w-100">
+						<form class="position-relative">
+							<input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+							<button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+								<i class="fas fa-search fs-6 "></i>
+							</button>
+						</form>
+					</div>
+				</div>
+				<!-- Nav Search END -->
+			</div>
+			<!-- Main navbar END -->
+
+			<!-- Profile START -->
+			<div class="dropdown ms-1 ms-lg-0">
+				<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+					<img class="avatar-img rounded-circle" src="/static/images/avatar/01.jpg" alt="avatar">
+				</a>
+				<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+					<!-- Profile info -->
+					<li class="px-3 mb-3">
+						<div class="d-flex align-items-center">
+							<!-- Avatar -->
+							<div class="avatar me-3">
+								<img class="avatar-img rounded-circle shadow" src="/static/images/avatar/01.jpg" alt="avatar">
+							</div>
+							<div>
+								<a class="h6" href="#">Lori Ferguson</a>
+								<p class="small m-0">example@gmail.com</p>
+							</div>
+						</div>
+					</li>
+          <li> <hr class="dropdown-divider"></li>
+					<!-- Links -->
+					<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+					<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+					<li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+					<li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+					<li> <hr class="dropdown-divider"></li>
+					<!-- Dark mode switch START -->
+					<li>
+						<div class="modeswitch-wrap" id="darkModeSwitch">
+							<div class="modeswitch-item">
+								<div class="modeswitch-icon"></div>
+							</div>
+							<span>Dark mode</span>
+						</div>
+					</li> 
+					<!-- Dark mode switch END -->
+				</ul>
+			</div>
+			<!-- Profile START -->
+		</div>
+	</nav>
+	<!-- Logo Nav END -->
+</header>
+<!-- Header END -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	
+<!-- =======================
+Page Banner START -->
+<section class="pt-0">
+	<div class="container-fluid px-0">
+		<div class="card bg-blue h-100px h-md-200px rounded-0" style="background:url(/static/images/pattern/04.png) no-repeat center center; background-size:cover;">
+		</div>
+	</div>
+	<div class="container mt-n4">
+		<div class="row">
+			<div class="col-12">
+				<div class="card bg-transparent card-body pb-0 px-0 mt-2 mt-sm-0">
+					<div class="row d-sm-flex justify-sm-content-between mt-2 mt-md-0">
+						<!-- Avatar -->
+						<div class="col-auto">
+							<div class="avatar avatar-xxl position-relative mt-n3">
+								<img class="avatar-img rounded-circle border border-white border-3 shadow" src="/static/images/avatar/09.jpg" alt="">
+								<span class="badge text-bg-success rounded-pill position-absolute top-50 start-100 translate-middle mt-4 mt-md-5 ms-n3 px-md-3">Pro</span>
+							</div>
+						</div>
+						<!-- Profile info -->
+						<div class="col d-sm-flex justify-content-between align-items-center">
+							<div>
+								<h1 class="my-1 fs-4">Lori Stevens</h1>
+								<ul class="list-inline mb-0">
+									<li class="list-inline-item me-3 mb-1 mb-sm-0">
+										<span class="h6">255</span>
+										<span class="text-body fw-light">points</span>
+									</li>
+									<li class="list-inline-item me-3 mb-1 mb-sm-0">
+										<span class="h6">7</span>
+										<span class="text-body fw-light">Completed courses</span>
+									</li>
+									<li class="list-inline-item me-3 mb-1 mb-sm-0">
+										<span class="h6">52</span>
+										<span class="text-body fw-light">Completed lessons</span>
+									</li>
+								</ul>
+							</div>
+							<!-- Button -->
+							<div class="mt-2 mt-sm-0">
+								<a href="student-course-list.html" class="btn btn-outline-primary mb-0">View my courses</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Advanced filter responsive toggler START -->
+				<!-- Divider -->
+				<hr class="d-xl-none">
+				<div class="col-12 col-xl-3 d-flex justify-content-between align-items-center">
+					<a class="h6 mb-0 fw-bold d-xl-none" href="#">Menu</a>
+					<button class="btn btn-primary d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+						<i class="fas fa-sliders-h"></i>
+					</button>
+				</div>
+				<!-- Advanced filter responsive toggler END -->
+			</div>
+		</div>
+	</div>
+</section>
+<!-- =======================
+Page Banner END -->
+
+<!-- =======================
+Page content START -->
+<section class="pt-0">
+	<div class="container">
+		<div class="row">
+
+			<!-- Left sidebar START -->
+			<div class="col-xl-3">
+				<!-- Responsive offcanvas body START -->
+				<div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+					<!-- Offcanvas header -->
+					<div class="offcanvas-header bg-light">
+						<h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+						<button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+					</div>
+					<!-- Offcanvas body -->
+					<div class="offcanvas-body p-3 p-xl-0">
+						<div class="border rounded-3 p-3 w-100">
+							<!-- Dashboard menu -->
+							<div class="list-group list-group-dark list-group-borderless" style="height: 78vh">
+							  {% for user in users %}
+							  <div class="d-flex p-2" id="u-{{user.0}}" data-loaded="0" style="cursor:pointer;" onclick="changeUser({{user.0}},'{{user.1}}')">
+								<div><img src="/static/images/avatar/man.png" style="width: 45px;"></div>&nbsp;
+								<div>
+									<h5 class="mb-0 uname">{{user.1}}</h5>
+									<p class="mb-0">This is last message</p>
+								</div>
+							  </div>
+							  {% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Responsive offcanvas body END -->
+			</div>
+			<!-- Left sidebar END -->
+
+			<!-- Main content START -->
+			<div class="col-xl-9">
+
+				<div class="card bg-transparent border rounded-3">
+					<!-- Card header START -->
+					<div class="card-header bg-transparent border-bottom">
+						<h3 class="mb-0" id="to-username">
+              				<img src="/static/images/avatar/man.png" style="width: 45px;"> Lori Stevens
+            			</h3>
+					</div>
+					<!-- Card header END -->
+
+					<!-- Card body START -->
+					<div class="card-body" style="padding:0">
+
+						<!-- Course list table START -->
+						{% for user in users %}
+						<div class="border-0 chats" id="chats-{{user.0}}" style="height: 60vh;overflow: auto;padding: 10px 20px;display:none;">
+							<!-- <div class="chat receiver">
+								<img src="/static/images/avatar/man.png" alt="avatar 1">
+								<div><p>Hello and thank you for visiting MDBootstrap. Please click the video below.</p></div>
+							</div>
+							<div class="chat sender">
+								<div> <p>Thank you, I really like your product.</p> </div>
+								<img src="/static/images/avatar/man.png" alt="avatar 1">
+							</div> -->
+							
+						</div>
+						{% endfor %}
+						<!-- Course list table END -->
+
+						<!-- Pagination START -->
+						<div class="card-footer justify-content-start align-items-center p-3 border-top">
+							<textarea class="form-control" style="height: 65px;" placeholder="Type message" id="msg-field" onkeypress="return handleMsgByEnter(event, this)"></textarea>
+							<div class="d-flex mt-2 justify-content-between">
+								<div style="position: relative;">
+									<div class="emojis" id="emojis" style="display: none;">
+										<!-- <button class="emoji">😀</button> -->
+									</div>
+									<button class="i-btn" onclick="openEmojis()"><i class="fas fa-smile"></i></button>
+									<input type="file" style="display: none;" onchange="changeFile(this)" id="file_input">
+									<button class="i-btn" onclick="document.getElementById('file_input').click()"><i class="fas fa-paperclip"></i></button>
+								</div>
+								<button class="btn btn-success-soft mb-0" id="send-btn" onclick="handleMsg()">
+									<i class="fas fa-paper-plane"></i> Send
+								</button>
+							</div>
+						</div>
+						<!-- Pagination END -->
+					</div>
+					<!-- Card body START -->
+				</div>
+			<!-- Main content END -->
+			</div><!-- Row END -->
+		</div>
+	</div>	
+</section>
+<!-- =======================
+Page content END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- =======================
+Footer START -->
+<footer class="bg-dark p-3">
+	<div class="container">
+		<div class="row align-items-center">
+			<!-- Widget -->
+			<div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+				<!-- Logo START -->
+				<a href="{% url 'home' %}"> <img class="h-20px" src="/static/images/logo-light.svg" alt="logo"> </a>
+			</div>
+			
+			<!-- Widget -->
+			<div class="col-md-4 mb-3 mb-md-0">
+				<div class="text-center text-white">
+					Copyrights ©2021 <a href="#" class="text-reset btn-link">Eduport</a>. All rights reserved.
+				</div>
+			</div>
+			<!-- Widget -->
+			<div class="col-md-4">
+				<!-- Rating -->
+				<ul class="list-inline mb-0 text-center text-md-end">
+					<li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-facebook"></i></a></li>
+					<li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-instagram"></i></a></li>
+					<li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-linkedin-in"></i></a></li>
+					<li class="list-inline-item ms-2"><a href="#"><i class="text-white fab fa-twitter"></i></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+<div id="toasts"></div>
+<div class="popup" id="file-upload-progress">
+	<div class="overlay" onclick="//this.parentNode.style.display='none'"></div>
+	<div class="content">
+		<h4 class="text-center">File Uploading</h4>
+		<!-- <i id="close-btn" class="bi bi-x-lg"></i> -->
+        <div class="divider"></div>
+		<h6 class="text-center" id="progress">50%</h6>
+		<h6 class="text-center">Completed</h6>
+	</div>
+</div>
+<!-- =======================
+Footer END -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Bootstrap JS -->
+<script src="/static/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Vendors -->
+<script src="/static/vendor/choices/js/choices.min.js"></script>
+<script src="/static/vendor/purecounterjs/dist/purecounter_vanilla.js"></script>
+<script src="/static/vendor/aos/aos.js"></script>
+
+<!-- Template Functions -->
+<script src="/static/js/functions.js"></script>
+
+<!-- Custom js -->
+<script src="/static/js/requests.js"></script>
+<script src="/static/libraries/alertify.min.js"></script>
+<script src="/static/js/chats.js"></script>
+<script src="/static/js/ws.js?v=0.01"></script>
+<script>
+	var to = 0;
+	const msgField = document.getElementById('msg-field');
+	const sendBtn = document.getElementById('send-btn');
+	const toUsername = document.getElementById('to-username');
+	const fileUploadProgress = document.getElementById("file-upload-progress");
+	const handleMsg = () => {
+		const msgText = msgField.value.trim();
+		msgField.focus();
+		if(msgText == '') return;
+		sendData(to, 0, msgText)
+		msgField.value = '';
+	}
+	const handleMsgByEnter = (e, obj)=> {
+		const msgText = obj.value.trim();
+		if(msgText == '') return;
+		const x = e.which || e.keycode;
+		if (x == 13 && !e.shiftKey) {
+			sendData(to, 0, msgText);
+			obj.value = '';
+			return false;
+		}
+		else return true;
+	}
+	const openEmojis = () => {
+		let emojisBox= document.getElementById('emojis');
+		emojisBox.style.display = emojisBox.style.display === 'none' ? 'flex' : 'none';
+	}
+	const changeUser = (id, uname) => {
+		if (to !== 0) {
+			document.getElementById('u-' + to).classList.remove('active');
+			document.getElementById("chats-"+to).style.display = 'none';
+		}
+		to = id;
+		const user = document.getElementById('u-' + id);
+		user.classList.add('active');
+		toUsername.innerHTML = `<img src="/static/images/avatar/man.png" style="width: 45px;"> ${uname}`;
+		document.getElementById("chats-"+id).style.display = 'block';
+		if(user.getAttribute('data-loaded') == '0') {
+			user.setAttribute('data-loaded', '1');
+			loadChats(id);
+		}
+	}
+	const changeFile = (obj) => {
+		if (obj.files && obj.files[0]) {
+			const formdata = new FormData();
+			formdata.append("file", obj.files[0]);
+			const progressHandler = (event) => {
+				// console.log(event);
+				const percent = (event.loaded / event.total) * 100;
+				fileUploadProgress.querySelector('#progress').innerHTML= Math.round(percent) + "%";
+			}
+			fileUploadProgress.querySelector('#progress').innerHTML= '0%';
+			fileUploadProgress.style.display = "flex";
+			const completeHandler = (event) => {
+				fileUploadProgress.style.display = "none";
+				alertify.success("File uploaded successfully.");
+				const res = JSON.parse(event.currentTarget.response);
+				console.log(res.data.file_path);
+				sendData(to, 1, res.data.file_path);
+			}
+			const errorHandler = (event) => {
+				fileUploadProgress.style.display = "none";
+				alertify.error("Something went wrong.");
+				console.log(event);
+			}
+			const abortHandler = (event) => {
+				fileUploadProgress.style.display = "none";
+				alertify.error("Something went wrong.");
+				console.log(event);
+			}
+			uploadFileForm("/account/chat-file-upload", formdata, progressHandler, completeHandler, errorHandler, abortHandler)
+		}
+	}
+	{% if users|length > 0 %}changeUser({{users.0.0}}, '{{users.0.1}}');{% endif %}
+</script>
+
+</body>
+</html>

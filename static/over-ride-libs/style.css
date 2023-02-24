@@ -1,0 +1,11 @@
+.ajs-header {
+  background-color: #24292d !important;
+  color: white;
+  font-weight: bold;
+}
+.ajs-footer {
+  border-top: 1px solid #aaaaaa;
+}
+.ajs-message {
+  color: white;
+}

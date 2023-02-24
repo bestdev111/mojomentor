@@ -1,0 +1,63 @@
+{% extends request.layout %} {% block content %}
+<div class="col-xl-9">  
+  <div class="card bg-transparent border rounded-3">
+    <div class="card-header bg-transparent border-bottom">
+      <h3 class="mb-0">{% if que %}Edit {% else %}Post {% endif %}a Question</h3>
+    </div>
+    <div class="Card-body">
+      <form class="border 0 p-4" method="POST" id="form">
+        {% csrf_token %}
+        <div class="col-12">
+          <label class="form-label">Category</label>
+          <select class="form-control mb-2" name="category" id="">
+            <option value="">Select a Category</option>
+            {% for category in categories %}
+            <option value="{{category.id}}" {% if category.id == que.category_id %}selected{% endif %}>{{category.title}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Question</label>
+          <textarea class="form-control mb-2" name="question" id="question">
+{{que.text}}</textarea
+          >
+        </div>
+        <div class="d-sm-flex justify-content-end mt-3">
+          <button
+            type="button"
+            class="btn btn-primary mb-0"
+            onclick="submitQues()"
+          >
+            Post Question
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script
+  src="https://cdn.tiny.cloud/1/mk4hwd62ffubr9yl8ajk2bgpkm9b42m7ltbswjiu7r2fx51s/tinymce/6/tinymce.min.js"
+  referrerpolicy="origin"
+></script>
+<script>
+  tinymce.init({
+    selector: "textarea#question",
+    // content_css: "/static/styles/tinymce-defalut.css",
+    height: 345,
+    plugins:
+      "print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons",
+    imagetools_cors_hosts: ["picsum.photos"],
+    menubar: "file edit view insert format tools table help",
+    toolbar:
+      "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
+  });
+  const submitQues = () => {
+    tinymce.triggerSave();
+    if (document.getElementById("question").value == "") {
+      alert("Please fill some text in question to Proceed");
+      return;
+    }
+    document.getElementById("form").submit();
+  };
+</script>
+{% endblock content %}

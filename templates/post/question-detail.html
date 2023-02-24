@@ -1,0 +1,149 @@
+{% extends request.layout %} {% block content %}
+<style>
+  .i-btn {
+    font-size: 18px;
+    margin: 0 6px;
+    border: none;
+    background-color: transparent;
+  }
+  .i-btn:hover,
+  .i-btn.active {
+    color: #066ac9;
+  }
+  .i-btn.inactive:hover {
+    color: black;
+  }
+  .i-btn.inactive {
+    cursor: default;
+  }
+</style>
+<div class="col-xl-9">
+  <!-- Counter boxes START -->
+
+  <!-- Counter boxes END -->
+  <h3>Question</h3>
+  <div class="card border rounded-3 my-3" id="q-{{question.0}}">
+    <div
+      class="card-header border-bottom d-flex justify-content-between flex-wrap"
+    >
+      <h6 class="my-0">@{{question.3}}</h6>
+      <b>{{question.4}} | {{question.2}}</b>
+    </div>
+    <div class="card-body">
+      {% autoescape off %}{{question.1}}{% endautoescape %}
+    </div>
+    <div class="card-footer border-top">
+      <button
+        class="i-btn {% if question.6 %}active{% endif %}"
+        onclick="likeQues(this, {{question.0}})"
+        data-liked="{{question.6}}"
+      >
+        <i class="fas fa-thumbs-up"></i> Like
+        <span class="likes">{% if question.5 %}{{question.5}}{% endif %}</span>
+      </button>
+      <button class="i-btn inactive">
+        <i class="fas fa-comment"></i>
+        Answer {% if question.7%}{{question.7}}{% endif %}
+      </button>
+    </div>
+  </div>
+  <br />
+  <h5>{{question.7}} Answers</h5>
+  {% if not question.7%}
+  <p>no answers</p>
+  {% endif %} {% for ans in answers %}
+  <div class="card border rounded-3 my-3" id="a-{{ans.0}}">
+    <div
+      class="card-header border-bottom d-flex justify-content-between flex-wrap"
+    >
+      <h6 class="my-0">@{{ans.3}}</h6>
+      <b>{{ans.2}}</b>
+    </div>
+    <div class="card-body">
+      {% autoescape off %}{{ans.1}}{% endautoescape %}
+    </div>
+    <div class="card-footer border-top">
+      <button
+        class="i-btn {% if ans.5 %}active{% endif %}"
+        onclick="voteAns(this, {{ans.0}})"
+        data-voted="{{ans.5}}"
+      >
+        <i class="fas fa-arrow-up"></i> Vote
+        <span class="votes">{% if ans.4 %}{{ans.4}}{% endif %}</span>
+      </button>
+      {% if request.user.role == 3 %}
+      <button
+        class="i-btn {% if ans.8 %}active{% endif %}"
+        onclick="endorseAns(this, {{ans.0}})"
+        data-endorsed="{{ans.8}}"
+      >
+        <i class="fas fa-check-circle"></i>
+        Endorsed by (<span class="endorses">{{ans.6}}</span>) mentors
+      </button>
+      {% else %} {% if ans.6%}
+      <button class="i-btn inactive">
+        <i class="fas fa-check-circle"></i> Endorsed by ({{ans.6}}) mentors
+      </button>
+      {% endif %} {% endif %}
+      {% if request.user.role == 3 %}
+      <button
+        class="i-btn {% if ans.9 %}active{% endif %}"
+        onclick="disapproveAns(this, {{ans.0}})"
+        data-disapproved="{{ans.9}}"
+      >
+        <i class="fas fa-times-circle"></i>
+        Disapproved by (<span class="disapproves">{{ans.7}}</span>) mentors
+      </button>
+      {% else %} {% if ans.7%}
+      <button class="i-btn inactive">
+        <i class="fas fa-times-circle"></i> Disapproved by ({{ans.7}}) mentors
+      </button>
+      {% endif %} {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  <br />
+  <h5>Post your Answer</h5>
+  <form action="{% url 'answer_create' question.0 %}" id="form" method="POST">
+    {% csrf_token %}
+    <div class="col-12">
+      <textarea name="answer" class="form-control mb-2" id="answer"></textarea>
+    </div>
+    <div class="d-sm-flex justify-content-start mt-3">
+      <button
+        type="button"
+        onclick="submitAnswer()"
+        class="btn btn-primary mb-0"
+      >
+        Post Answer
+      </button>
+    </div>
+  </form>
+</div>
+<script
+  src="https://cdn.tiny.cloud/1/mk4hwd62ffubr9yl8ajk2bgpkm9b42m7ltbswjiu7r2fx51s/tinymce/6/tinymce.min.js"
+  referrerpolicy="origin"
+></script>
+<script src="/static/js/post.js"></script>
+<script>
+  tinymce.init({
+    selector: "textarea#answer",
+    // content_css: "/static/styles/tinymce-defalut.css",
+    height: 345,
+    plugins:
+      "print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons",
+    imagetools_cors_hosts: ["picsum.photos"],
+    menubar: "file edit view insert format tools table help",
+    toolbar:
+      "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
+  });
+  const submitAnswer = () => {
+    tinymce.triggerSave();
+    if (document.getElementById("answer").value == "") {
+      alert("Please fill some text in answer to Proceed");
+      return;
+    }
+    document.getElementById("form").submit();
+  };
+</script>
+{% endblock content %}

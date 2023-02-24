@@ -1,0 +1,142 @@
+.chats .chat, .chats .file {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+.chat.receiver, .file.receiver {
+  justify-content: flex-start;
+}
+.chat.receiver > div {
+  border-radius: 15px;
+  background-color: #f5f6f7;
+  margin: 10px;
+  padding: 15px;
+  max-width: 75%;
+}
+.file.receiver > div {
+  border-radius: 15px;
+  margin: 10px;
+  padding: 15px;
+  max-width: 75%;
+}
+.file.receiver > div h6 a, .file.sender > div h6 a {
+  text-decoration: none;
+  margin-left: 10px;
+  color: black;
+}
+.chat.sender, .file.sender {
+  justify-content: flex-end;
+}
+.chat.sender > div {
+  border-radius: 15px;
+  background-color: #1266f1;
+  color: white;
+  margin: 10px;
+  padding: 15px;
+  max-width: 75%;
+}
+.file.sender > div {
+  border-radius: 15px;
+  margin: 10px;
+  padding: 15px;
+  max-width: 75%;
+}
+.chats .chat > img, .chats .file > img {
+  width: 45px;
+  height: 100%;
+  border-radius: 25px;
+}
+.chats .chat p, .chats .file p {
+  margin-bottom: 0;
+  font-size: 0.875em;
+}
+.emojis {
+  position: absolute;
+  bottom: 130px;
+  display: flex;
+  width: 50vw;
+  min-width: 320px;
+  height: 150px;
+  overflow: auto;
+  left: 0px;
+  flex-wrap: wrap;
+  border: 1px solid;
+  padding: 5px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background-color: white;
+}
+button.emoji {
+  margin: 2px;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  border-radius: 2px;
+}
+button.emoji:hover {
+  background-color: #accef7;
+}
+.i-btn {
+  font-size: 20px;
+  margin: 6px;
+  border: none;
+  background-color: transparent;
+}
+.chat-user.active {
+  background-color: #accef7;
+}
+#toasts {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  margin-right: 15px;
+  margin-bottom: 5px;
+}
+#toasts .toast {
+  margin-bottom: 10px;
+}
+
+/* --------------- popup --------------- */
+.popup {
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  height: 100%;
+  display: none;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  right: 0;
+}
+.popup .overlay {
+  display: block;
+  z-index: -1;
+}
+.popup .content {
+  width: 85%;
+  /* max-width: 480px; */
+  max-width: 200px;
+  background-color: white;
+  padding: 20px 15px;
+  overflow: auto;
+  position: relative;
+  border-radius: 10px;
+}
+.popup #close-btn {
+  position: absolute;
+  right: 20px;
+  font-size: 25px;
+  cursor: pointer;
+}
+/* --------------- overlay --------------- */
+.overlay {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+  background: #232323;
+  opacity: 0.7;
+  display: none;
+  top: 0;
+  left: 0;
+}

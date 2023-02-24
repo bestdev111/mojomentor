@@ -1,0 +1,288 @@
+{% extends request.layout %} {% block content %}
+<style>
+  button.page-link:disabled {
+    cursor: not-allowed;
+  }
+</style>
+<div class="col-xl-9">  
+    <!-- Appointments List table START -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card border bg-transparent rounded-3">
+          <!-- Card header START -->
+          <div class="card-header bg-transparent border-bottom">
+            <div class="d-sm-flex align-items-center"> <!-- justify-content-sm-between -->
+              <h3 class="mb-2 mb-sm-0">Appointments</h3>&nbsp;
+              <b>(Time in {% if request.user.time_zone_id %}{{request.user.time_zone.name}}{% else %}UTC{% endif %})</b>
+              <!-- <a href="#" class="btn btn-sm btn-primary-soft mb-0">View all</a> -->
+            </div>
+          </div>
+          <!-- Card header END -->
+  
+          <!-- Card body START -->
+          <div class="card-body">
+            <div class="table-responsive border-0 rounded-3">
+              <!-- Table START -->
+              <table class="table table-dark-gray align-middle p-4 mb-0">
+                <!-- Table head -->
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-0 rounded-start">
+                      Student
+                    </th>
+                    <th scope="col" class="border-0">Date</th>
+                    <th scope="col" class="border-0">Time start</th>
+                    <th scope="col" class="border-0">Time end</th>
+                    <th scope="col" class="border-0">Meeting url</th>
+                    <th scope="col" class="border-0 rounded-end">Action</th>
+                  </tr>
+                </thead>
+                <!-- Table body START -->
+                <tbody id="table-body">
+                  <!-- Table item -->
+                  <!-- <tr>
+                    <td><b>Building Scalable APIs with GraphQL</b></td>
+                    <td>34</td>
+                    <td>$1,25,478</td>
+                    <td>
+                      <span class="badge bg-primary bg-opacity-10 text-primary"
+                        >9 months</span
+                      >
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-sm btn-success-soft btn-round me-1 mb-0" ><i class="far fa-fw fa-edit"></i></a>
+                      <button class="btn btn-sm btn-danger-soft btn-round mb-0">
+                        <i class="fas fa-fw fa-times"></i>
+                      </button>
+                    </td>
+                  </tr> -->
+                </tbody>
+              </table>
+            </div>
+  
+            <!-- Pagination START -->
+            <div class="d-sm-flex justify-content-sm-between align-items-sm-center mt-4 mt-sm-3">
+              <!-- Content -->
+              <p class="mb-0 text-center text-sm-start" id="entries_details"></p>
+              <!-- Pagination -->
+              <nav class="d-flex justify-content-center mb-0" aria-label="navigation">
+                <ul
+                  class="pagination pagination-sm pagination-primary-soft d-inline-block d-md-flex rounded mb-0"
+                >
+                  <li class="page-item mb-0">
+                    <button class="page-link" id="back_btn" onclick="decreasePage()">
+                      <i class="fas fa-angle-left"></i>
+                    </button>
+                  </li>
+                  <li class="page-item mb-0 active">
+                    <button class="page-link" id="page-no">1</button>
+                  </li>
+                  <li class="page-item mb-0">
+                    <button class="page-link" id="next_page" onclick="increasePage()">
+                      <i class="fas fa-angle-right"></i>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- Pagination END -->
+          </div>
+          <!-- Card body START -->
+        </div>
+      </div>
+    </div>
+    <!-- Appointments List table END -->
+</div>
+
+<!-- Book appointment modal START -->
+<div class="modal fade" id="ModifyAppointment" tabindex="-1" aria-labelledby="ModifyAppointmentLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<form class="modal-content" id="book-appointment-form" onsubmit="event.preventDefault(); submitModifyAppointment();">
+			{% csrf_token %}
+			<input type="hidden" name="instructor_id" value="{{instructor.id}}">
+			<div class="modal-header bg-dark">
+				<h5 class="modal-title text-white" id="ModifyAppointmentLabel">Modify Appointment</h5>
+				<button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+			</div>
+			<div class="modal-body">
+				<div class="row text-start g-3">
+
+          <input type="hidden" id="appoint_id">
+
+					<!-- Question -->
+					<div class="col-12">
+						<label class="form-label">Date</label>
+						<input class="form-control" required type="date" id="appoint_date" min="{{tomorrow}}">
+					</div>
+					<h6 class="mb-0">Time in {{request.user.time_zone.name}}</h6>
+
+					<!-- START Time -->
+					<div class="col-6">
+						<label class="form-label">Start Time</label>
+						<input class="form-control" required type="time" id="appoint_start_time">
+					</div>
+
+					<!-- END Time -->
+					<div class="col-6">
+						<label class="form-label">End Time</label>
+						<input class="form-control" required type="time" id="appoint_end_time">
+					</div>
+
+          <!-- Modify Description -->
+          <div class="col-12">
+            <label class="form-label">Message</label>
+            <textarea id="appoint_modify_text" class="form-control"  rows="3" required></textarea>
+          </div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+				<button type="submit" id="appoint_submit_btn" class="btn btn-success my-0">Submit Request</button>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Book appointment modal END -->
+
+<!-- Appointment review modal START -->
+<div class="modal fade" id="appointmentReviewModal" tabindex="-1" aria-labelledby="appointmentReviewModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header bg-dark">
+				<h5 class="modal-title text-white" id="appointmentReviewModalLabel">Appointment Feedbacks</h5>
+				<button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+			</div>
+			<div class="modal-body">
+				<div class="row text-start g-3">
+          <h5 class="mb-0">Rate student's service / package</h5>
+          <form id="user-review" onsubmit="event.preventDefault(); submitUserReview();">
+          </form>
+          <h5 class="mb-0">Feedback on call</h5>
+          <form id="appoint-review" onsubmit="event.preventDefault(); submitAppointReview();">
+          </form>
+
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Appointment review modal END -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+<script src="/static/js/requests.js"></script>
+<script>
+var pageIncBtn = document.getElementById("next_page");
+var pageDecBtn = document.getElementById("back_btn");
+var pageNo = 0;
+var rowCount = 10;
+var pageAvail = 0;
+const loader = `
+<div class="spinner-border m-auto my-5 d-block" id="loader">
+  <span class="visually-hidden">Loading...</span>
+</div>`;
+const loadAppointments = async() => {
+  document.getElementById("table-body").innerHTML = loader;
+  let params = `?no_of_row=${rowCount}&offset=${rowCount * pageNo}`;
+  const result = await getFromServer("{% url 'inst_appointment_list' %}" + params);
+  if (result.status) {
+    let dataHtml = '';
+    const rowsAvail = result.data.rows.length;
+    result.data.rows.forEach(row => {
+      // console.log(row);
+      const dateArr = fromatToDateAndTime(`${row[1]}T${row[2]}`);
+      const dateArr2 = toDateAndTime(`${row[1]}T${row[2]}`);
+      let action = '';
+      if (row[7] === 0 && row[8] === false) {
+        action += `
+        <button class="btn btn-sm btn-success-soft btn-round mb-0" title="Accept" onclick="updateAppointment(${row[0]}, 'accept', this)">
+          <i class="fas fa-fw fa-check"></i>
+        </button>
+        <button class="btn btn-sm btn-danger-soft btn-round mb-0" title="Decline" onclick="updateAppointment(${row[0]}, 'decline', this)">
+          <i class="fas fa-fw fa-times"></i>
+        </button>
+        <button class="btn btn-sm btn-success-soft mb-0" title="Modify" onclick="modifyAppointment(${row[0]}, '${dateArr2[0]}', '${dateArr2[1]}', '${toTime(row[3])}')">Modify</button>
+        `;
+      } else {
+        if (row[7] == 1) action += `<span class="text-success mb-0">Accepted</span>
+        <button class="btn btn-sm btn-success-soft mb-0" title="Rate" onclick="rateAppointment(${row[0]}, this)">Give Rating</button>`;
+        else if(row[7] == 2) action += `<p class="text-danger mb-0">Declined</p>`;
+        else if(row[8]) action += `<p class="text-primary mb-0">Modify Requested</p>`;
+      }
+      dataHtml += `<tr id="${row[0]}">
+        <td>${row[6]}</td><td>${dateArr[0]}</td><td>${dateArr[1]}</td>
+        <td>${formatToTime(row[3])}</td><td>${row[4]}</td>
+        <td>${action}</td>
+      </tr>`;
+    });
+    document.getElementById('table-body').innerHTML = dataHtml;
+    pageAvail = parseInt(result.data.count / rowCount);
+    pageDecBtn.disabled = pageNo > 0 ? false : true;
+    pageIncBtn.disabled = pageNo < pageAvail ? false : true;
+    document.getElementById("page-no").innerHTML = pageNo + 1;
+    document.getElementById("entries_details").innerHTML = `Showing ${
+      rowCount * pageNo + 1
+    } to ${rowCount * pageNo + rowsAvail} of ${result.data.count} entries`;
+  } else {
+    alertify.error(result.msg);
+    document.getElementById("table-body").innerHTML = "";
+  }
+}
+const decreasePage = () => {
+  if (pageNo > 0) {
+    pageNo--;
+    loadAppointments();
+  }
+};
+const increasePage = () => {
+  if (pageNo < pageAvail) {
+    pageNo++;
+    loadAppointments();
+  }
+};
+loadAppointments();
+const updateAppointment = (id, type, btn) => {
+  alertify.confirm(`Do you really want ${type} appointment.`,
+    () => updateAppointmentToServer({id: id, type: type}, btn),
+    () => {}
+  ).setHeader("<em> Appointment </em> ");
+}
+const modifyAppointment = (id, date, start_time, end_time) => {
+  new bootstrap.Modal(document.getElementById('ModifyAppointment')).show();
+  document.getElementById('appoint_id').value = id;
+  document.getElementById('appoint_date').value = date;
+  document.getElementById('appoint_start_time').value = start_time;
+  document.getElementById('appoint_end_time').value = end_time;
+}
+const submitModifyAppointment = () => {
+  data = {
+    id: document.getElementById('appoint_id').value,
+    type: 'modify',
+    date: document.getElementById('appoint_date').value,
+    start_time: document.getElementById('appoint_start_time').value,
+    end_time: document.getElementById('appoint_end_time').value,
+    modify_text: document.getElementById('appoint_modify_text').value
+  };
+  updateAppointmentToServer(data, document.getElementById('appoint_submit_btn'))
+}
+const updateAppointmentToServer = async(data, btn) => {
+  showBtnLoading(btn);
+  const result = await postToServer("{% url 'inst_update_appointment' %}", data);
+  hideBtnLoading(btn);
+  if (result.status) {
+    const element = document.querySelector(`#table-body tr[id="${data['id']}"] td:last-child`);
+    if (result.data.status == 1) element.innerHTML = `<span class="text-success mb-0">Accepted</span>
+    <button class="btn btn-sm btn-success-soft mb-0" title="Rate" onclick="rateAppointment(${data.id}, this)">Give Rating</button>`;
+    else if(result.data.status ==2) element.innerHTML = `<p class="text-danger mb-0">Declined</p>`;
+    else if(result.data.modify_req) element.innerHTML = `<p class="text-primary mb-0">Modify Requested</p>`;
+    else element.innerHTML = ``;
+    alertify.success(result.msg);
+  } else {
+    alertify.error(result.msg);
+  }
+}
+</script>
+<script src="/static/js/appoint-reviews.js"></script>
+{% endblock content %}

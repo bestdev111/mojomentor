@@ -1,0 +1,250 @@
+{% extends 'layouts/home-layout.html' %}
+{% block content %}
+<!-- =======================
+Main Content START -->
+<section class="pb-0 pt-4 pb-md-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+
+				<!-- Title and Info START -->
+				<div class="row">
+					<!-- Avatar and Share -->
+					<div class="col-lg-3 align-items-center mt-4 mt-lg-5 order-2 order-lg-1">
+						<div class="text-lg-center">
+							<!-- Author info -->
+							<div class="position-relative">
+								<!-- Avatar -->
+								<div class="avatar avatar-xxl">
+									<img class="avatar-img rounded-circle" src="{% if instructor.profile_pic %}{{instructor.profile_pic.url}}{% else %}/static/images/user.png{% endif %}" alt="avatar">
+								</div>
+								<a href="#" class="h5 stretched-link mt-2 mb-0 d-block">@{{instructor.username}}</a>
+							</div>
+							<!-- Info -->
+							<ul class="list-inline list-unstyled">
+								<li class="list-inline-item d-lg-block my-lg-2">{{instructor.date_joined}}</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- Content -->
+					<div class="col-lg-9 order-1">
+						<!-- Pre title -->
+						{% comment %} <span>40D ago</span><span class="mx-2">|</span><div class="badge text-bg-success">Research</div> {% endcomment %}
+						<!-- Title -->
+						<h1 class="mt-2 mb-0 display-5">{% if instructor.first_name or instructor.last_name %}{{instructor.first_name}} {{instructor.last_name}} {% else %}Name{% endif %}</h1>
+						<!-- Info -->
+						<p class="mt-2">{% if profile.about %}{{profile.about}}{% endif %}</p>
+						<ul class="list-inline mb-3">
+							{% if profile.twitter %}
+							<li class="list-inline-item me-3">
+								<a href="{{profile.twitter}}" target="_blank" class="fs-5 text-twitter"><i class="fab fa-twitter-square"></i></a>
+							</li>
+							{% endif %}
+							{% if profile.instagram %}
+							<li class="list-inline-item me-3">
+								<a href="{{profile.instagram}}" target="_blank" class="fs-5 text-instagram"><i class="fab fa-instagram-square"></i></a>
+							</li>
+							{% endif %}
+							{% if profile.facebook %}
+							<li class="list-inline-item me-3">
+								<a href="{{profile.facebook}}" target="_blank" class="fs-5 text-facebook"><i class="fab fa-facebook-square"></i></a>
+							</li>
+							{% endif %}
+							{% if profile.linkedin %}
+							<li class="list-inline-item me-3">
+								<a href="{{profile.linkedin}}" target="_blank" class="fs-5 text-linkedin"><i class="fab fa-linkedin"></i></a>
+							</li>
+							{% endif %}
+							{% if profile.youtube %}
+							<li class="list-inline-item">
+								<a href="{{profile.youtube}}" target="_blank" class="fs-5 text-youtube"><i class="fab fa-youtube-square"></i></a>
+							</li>
+							{% endif %}
+						</ul>
+						<div class="mt-3">
+							<!-- <h5 id="availability">Availability HH:MM - HH:MM</h5> -->
+							<h5 id="availability">Availability {{start_time}} - {{end_time}} {{time_zone_name}}</h5>
+						</div>
+						{% if instructor.id != request.user.id %}
+						<div class="mt-3">
+							<a href="{{chat_link}}" class="btn btn-success-soft mb-0"><i class="fas fa-comments"></i> Chat</a>
+							{% if request.user.is_authenticated %}
+							<a href="javascript:void(0);" class="btn btn-success-soft mb-0" data-bs-toggle="modal" data-bs-target="#BookAppointment">Book Appointment</a>
+							<button class="btn btn-{% if followed == 1 %}danger{% else %}success{% endif %}-soft mb-0" onclick="followUser(this, {{instructor.id}})" data-followed="{{followed}}">
+								{% if followed == 1 %}Unfollow{% else %}Follow{% endif %}
+							</button>
+							{% else %}
+							<a href="{% url 'login' %}" class="btn btn-success-soft mb-0">Book Appointment</a>
+							<a href="{% url 'login' %}" class="btn btn-success-soft mb-0">Follow</a>
+							{% endif %}
+						</div>
+						{% endif %}
+					</div>
+				</div>
+				<!-- Title and Info END -->
+
+				<!-- Video START -->
+				<div class="row mt-4">
+					<div class="col-xl-10 mx-auto">
+						<!-- Card item START -->
+						{% comment %} <div class="card overflow-hidden h-200px h-sm-300px h-lg-400px h-xl-500px rounded-3 text-center" style="background-image:url(/static/images/event/10.jpg); background-position: center left; background-size: cover;">
+							<!-- Card Image overlay -->
+							<div class="bg-overlay bg-dark opacity-4"></div>
+							<div class="card-img-overlay d-flex align-items-center p-2 p-sm-4"> 
+								<div class="w-100 my-auto">
+									<div class="row justify-content-center">
+										<!-- Video -->
+										<div class="col-12">
+											<a href="https://www.youtube.com/embed/tXHviS-4ygo" class="btn btn-lg text-danger btn-round btn-white-shadow stretched-link position-static mb-0" data-glightbox="" data-gallery="video-tour">
+												<i class="fas fa-play"></i>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> {% endcomment %}
+						{% if blog.video %}
+						<div class="w-100">
+							<video controls width="100%" height="auto" controlsList="nodownload">
+								<source src="{{blog.video.url}}" type="video/mp4">
+								<!-- <a href="/media/cc0-videos/flower.mp4">MP4</a> -->
+							</video>
+						</div>
+						{% elif blog.image %}
+						<div class="w-100">
+							<img src="{{blog.image.url}}" />
+						</div>
+						{% endif %}
+						<!-- Card item END -->
+					</div>
+				</div>
+				<!-- Video END -->
+				<br />
+				<!-- Quote and content START -->
+				{% autoescape off %}{{blog.body}}{% endautoescape %}
+				<!-- Quote and content END -->
+
+				<hr> <!-- Divider -->
+			</div>
+		</div> <!-- Row END -->
+	</div>
+</section>
+<!-- =======================
+Main Content END -->
+
+<!-- Book appointment modal START -->
+<div class="modal fade" id="BookAppointment" tabindex="-1" aria-labelledby="BookAppointmentLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<form class="modal-content" id="book-appointment-form" method="POST" action="{% url 'book_appointment' %}" onsubmit="event.preventDefault(); submitBooking();">
+			{% csrf_token %}
+			<input type="hidden" name="instructor_id" value="{{instructor.id}}">
+			<div class="modal-header bg-dark">
+				<h5 class="modal-title text-white" id="BookAppointmentLabel">Book Appointment</h5>
+				<button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+			</div>
+			<div class="modal-body">
+				<div class="row text-start g-3">
+
+					<!-- Question -->
+					<div class="col-12">
+						<label class="form-label">Meeting Url</label>
+						<input class="form-control" required type="url" name="url" placeholder="Like google meet or zoom meeting link">
+					</div>
+
+					<!-- Question -->
+					<div class="col-12">
+						<label class="form-label">Date</label>
+						<input class="form-control" required type="date" name="date" min="{{tomorrow}}">
+					</div>
+					<h6 class="mb-0">Time in {{time_zone_name}}</h6>
+					<!-- START Time -->
+					<div class="col-6">
+						<label class="form-label">Start Time ({{start_time}} - {{end_time}})</label>
+						<input class="form-control" required type="time" id="appoint_start_time" name="start_time">
+					</div>
+
+					<!-- END Time -->
+					<div class="col-6">
+						<label class="form-label">End Time ({{start_time}} - {{end_time}})</label>
+						<input class="form-control" required type="time" id="appoint_end_time" name="end_time">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger-soft my-0" data-bs-dismiss="modal">Close</button>
+				<button type="submit" id="appoint_submit_btn" class="btn btn-success my-0">Submit Request</button>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- Book appointment modal END -->
+<script src="/static/js/requests.js"></script>
+<script>
+	// const utcStart = {{start_time}};
+	// const utcEnd = {{end_time}};
+	// const d = new Date();
+	// const localOffset = -d.getTimezoneOffset();
+	// window.addEventListener('load', (event) => {
+	// 	const startTime = minsToHHMM(utcStart+localOffset);
+	// 	const endTime = minsToHHMM(utcEnd+localOffset);
+	// 	document.getElementById('availability').innerHTML = `Availability ${startTime} - ${endTime}`;
+	// 	document.getElementById('appoint_start_time').setAttribute('min', startTime);
+	// 	document.getElementById('appoint_start_time').setAttribute('max', endTime);
+	// 	// document.getElementById('appoint_end_time').setAttribute('max', endTime);
+	// }); 
+	const submitBooking = () => {
+		const insStartTime = hhMMTomins('{{start_time}}');
+		const insEndTime = hhMMTomins('{{end_time}}');
+		const startTimeStr = document.getElementById('appoint_start_time').value;
+		const startTime = hhMMTomins(startTimeStr);
+		const endTime = hhMMTomins(document.getElementById('appoint_end_time').value);
+		// console.log(insStartTime, insEndTime, startTime, endTime);
+		if(insStartTime <= insEndTime) {
+			if(startTime < insStartTime || startTime > insEndTime) {
+				showAlert("Start time", "Start time should be in between {{start_time}} and {{end_time}}");
+				return false;
+			} else if(endTime < startTime || endTime > insEndTime) {
+				showAlert("End time", `End time should be in between ${startTimeStr} and {{end_time}}`);
+				return false;
+			}
+		} else {
+			if(startTime > insEndTime && startTime < insStartTime) {
+				showAlert("Start time", "Start time should be in between {{start_time}} and {{end_time}}");
+				return false;
+			} else if(endTime > insEndTime && endTime < startTime) {
+				showAlert("End time", `End time should be in between ${startTimeStr} and {{end_time}}`);
+				return false;
+			}
+		}
+		if (startTime == endTime) {
+			showAlert("Time", "Start time can't be equal to end time.");
+			return false;
+		}
+		showBtnLoading(document.getElementById('appoint_submit_btn'));
+		document.getElementById('book-appointment-form').submit();
+	}
+	const followUser = async (btn, id) => {
+		const liked = parseInt(btn.getAttribute("data-followed"));
+		const url = `/account/user/${id}/${liked ? 'unfollow' : 'follow'}`;
+		showBtnLoading2(btn);
+		const res = await postToServer(url);
+		hideBtnLoading2(btn);
+		if (res.status) {
+			if(liked) {
+				btn.setAttribute("data-followed", 0);
+				btn.classList.remove("btn-danger-soft");
+				btn.classList.add("btn-success-soft");
+				btn.innerHTML = "Follow";
+				alertify.success("Unfollowd successfully.");
+			} else {
+				btn.setAttribute("data-followed", 1);
+				btn.classList.add("btn-danger-soft");
+				btn.classList.remove("btn-success-soft");
+				btn.innerHTML = "Unfollow";
+				alertify.success("Followd successfully.");
+			}
+		} else alertify.error(res.msg);
+	}
+</script>
+{% endblock content %}

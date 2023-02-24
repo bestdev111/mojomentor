@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mojomentors</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #f5f7f9;
+      }
+      main {
+        max-width: 480px;
+        margin: 50px auto 0 auto;
+        box-shadow: 0px 0px 40px rgb(29 58 83 / 15%) !important;
+        background-color: white;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .conf-btn {
+        padding: 10px 20px;
+        border-radius: 10px;
+        background-color: #066ac9;
+        color: #ffffff !important;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <main style="text-align: center">
+      <h1>Confirm your Email</h1>
+      <br />
+      <p><b>{{request.user.email}}</b></p>
+      <br />
+      <button onclick="confirmEmail()" class="conf-btn">Confirm Email</button>
+    </main>
+    <script>
+      const confirmEmail = async () => {
+        // startLoading();
+        const res = await fetch("", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{csrf_token}}",
+          },
+          //   body: JSON.stringify(data),
+        });
+        // stopLoading();
+        if (res.status === 200) {
+          // const data = (await res.json()).data;
+          alert((await res.json()).msg);
+          window.location.href = "/student/dashboard";
+        } else if (res.status === 500) {
+          alert("Something went wrong.");
+        } else {
+          alert((await res.json()).msg);
+        }
+      };
+    </script>
+  </body>
+</html>

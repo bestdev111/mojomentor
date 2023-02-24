@@ -1,0 +1,180 @@
+{% extends 'layouts/admin-layout.html' %}  {% load static %} {% block styles %}
+<!-- custom CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/chats.css' %}?v=0.02">
+{% endblock styles %}  {% block content %}
+<div class="page-content-wrapper border">
+  <!-- Code -->
+  <div class="row mb-3">
+    <div class="col-12 d-sm-flex justify-content-between align-items-center">
+      <h1 class="h3 mb-2 mb-sm-0">
+        <img src="{% if curr_user_obj.profile_pic %}{{curr_user_obj.profile_pic.url}}{% else %}{% static 'images/user.png' %}{% endif %}" style="width: 45px; border-radius: 25px;" alt="">
+        &nbsp;{{curr_user_obj.username}}
+      </h1>
+      <a href="{% url 'ad_students' %}" class="btn btn-sm btn-primary mb-0">Back to Student list</a>
+    </div>
+  </div>
+
+  <!-- Card START -->
+  <div class="card bg-transparent border">
+    <!-- Card body START -->
+    <div class="card-body">
+      <!-- Course table START -->
+      <section class="pt-0">
+        <div class="container">
+          <div class="row">
+      
+            <!-- Left sidebar START -->
+            <div class="col-xl-3">
+              <!-- Responsive offcanvas body START -->
+              <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+                <!-- Offcanvas header -->
+                <div class="offcanvas-header bg-light">
+                  <h5 class="offcanvas-title" id="offcanvasNavbarLabel">My profile</h5>
+                  <button  type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasSidebar" aria-label="Close"></button>
+                </div>
+                <!-- Offcanvas body -->
+                <div class="offcanvas-body p-3 p-xl-0">
+                  <div class="border rounded-3 p-3 w-100">
+                    <!-- Dashboard menu -->
+                    <div class="list-group list-group-dark list-group-borderless" style="height: 78vh">
+                      {% for user in users %}
+                      <div class="d-flex p-2 chat-user" id="u-{{user.0}}" data-loaded="0" style="cursor:pointer;" onclick="changeUser({{user.0}},'{{user.1}}')">
+                      <div><img id="profile-{{user.0}}" src="{% if user.2 %}/media/{{user.2}}{% else %}{% static 'images/user.png' %}{% endif %}" style="width: 45px;border-radius: 25px;"></div>&nbsp;
+                      <div>
+                        <h5 class="mb-0 uname">{{user.1}}</h5>
+                        <p class="mb-0">This is last message</p>
+                      </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Responsive offcanvas body END -->
+            </div>
+            <!-- Left sidebar END -->
+      
+            <!-- Main content START -->
+            <div class="col-xl-9">
+      
+              <div class="card bg-transparent border rounded-3">
+                <!-- Card header START -->
+                <div class="card-header bg-transparent border-bottom">
+                  <h3 class="mb-0" id="to-username">
+                            <img src="/static/images/avatar/man.png" style="width: 45px;border-radius: 25px;"> Username
+                        </h3>
+                </div>
+                <!-- Card header END -->
+      
+                <!-- Card body START -->
+                <div class="card-body" style="padding:0">
+      
+                  <!-- Course list table START -->
+                  {% for user in users %}
+                  <div class="border-0 chats" id="chats-{{user.0}}" style="height: 70vh;overflow: auto;padding: 10px 20px;display:none;">
+                    <!-- <div class="chat receiver">
+                      <img src="/static/images/avatar/man.png" alt="avatar 1">
+                      <div><p>Hello and thank you for visiting MDBootstrap. Please click the video below.</p></div>
+                    </div>
+                    <div class="chat sender">
+                      <div> <p>Thank you, I really like your product.</p> </div>
+                      <img src="/static/images/avatar/man.png" alt="avatar 1">
+                    </div> -->
+                    
+                  </div>
+                  {% endfor %}
+                  <!-- Course list table END -->
+                </div>
+                <!-- Card body START -->
+              </div>
+            <!-- Main content END -->
+            </div><!-- Row END -->
+          </div>
+        </div>	
+      </section>
+      <!-- Course table END -->
+    </div>
+    <!-- Card body END -->
+  </div>
+  <!-- Card END -->
+</div>
+{% endblock content %} {% block scripts %}
+<!-- Custom js -->
+<script>
+  const currUserPic = "{% if curr_user_obj.profile_pic %}{{curr_user_obj.profile_pic.url}}{% else %}{% static 'images/user.png' %}{% endif %}";
+	var to = 0;
+  const toUsername = document.getElementById('to-username');
+  const changeUser = (id, uname) => {
+		if (to !== 0) {
+			document.getElementById('u-' + to).classList.remove('active');
+			document.getElementById("chats-"+to).style.display = 'none';
+		}
+		to = id;
+		const user = document.getElementById('u-' + id);
+		user.classList.add('active');
+		let profileImg = document.getElementById(`profile-${id}`);
+		profileImg = (profileImg && profileImg.src) ? profileImg.src : '{% static 'images/user.png' %}';
+		toUsername.innerHTML = `<img src="${profileImg}" style="width: 45px;border-radius: 25px;"> ${uname}`;
+		document.getElementById("chats-"+id).style.display = 'block';
+		if(user.getAttribute('data-loaded') == '0') {
+			user.setAttribute('data-loaded', '1');
+			loadChats(id);
+		}
+	}
+  const loadChats = async (user_id) => {
+    // msgField.setAttribute("disabled", true);
+    // sendBtn.setAttribute("disabled", true);
+    const result = await getFromServer("/admin/user/{{curr_user}}/get-chats/" + user_id);
+    const chatsBox = document.getElementById("chats-" + user_id)
+    result.data.rows.forEach((chat) => {
+      renderChat(chatsBox, chat[0], chat[1], chat[2], user_id);
+    });
+    chatsBox.scrollTop = chatsBox.scrollHeight;
+    // msgField.removeAttribute("disabled");
+    // sendBtn.removeAttribute("disabled");
+  };
+  const renderChat = (chatsBox, msg_side, msg_type, msg, user_id) => {
+    let profileImg = document.getElementById(`profile-${user_id}`);
+    profileImg = (profileImg && profileImg.src) ? profileImg.src : '/static/images/user.png';
+  
+    const msgHtmlText = msg.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    if(msg_type == 1) {
+      if (msg_side == 'receive') {
+        html = `
+        <div class="file receiver">
+          <img src="${profileImg}" alt="avatar 1">
+          <div>
+            <h6>File <a href="/media/${msgHtmlText}" download target="_blank"><i class="fas fa-download"></i></a>
+            </h6><p><a href="/media/${msgHtmlText}" target="_blank">${msgHtmlText}</a></p>
+          </div>
+        </div>`;
+      } else {
+        html = `
+        <div class="file sender">
+          <div>
+            <h6>File <a href="/media/${msgHtmlText}" download target="_blank"><i class="fas fa-download"></i></a>
+            </h6><p><a href="/media/${msgHtmlText}" target="_blank">${msgHtmlText}</a></p>
+          </div>
+          <img src="${currUserPic}" alt="avatar 1">
+        </div>`;
+      }
+    } else {
+      if (msg_side == 'receive') {
+        html = `
+        <div class="chat receiver">
+          <img src="${profileImg}" alt="avatar 1">
+          <div><p>${msgHtmlText}</p></div>
+        </div>`;
+      } else {
+        html = `
+        <div class="chat sender">
+          <div><p>${msgHtmlText}</p></div>
+          <img src="${currUserPic}" alt="avatar 1">
+        </div>`;
+      }
+    }
+    chatsBox.insertAdjacentHTML("beforeend", html); // afterbegin
+  }
+  {% if users|length > 0 %}changeUser({{users.0.0}}, '{{users.0.1}}');{% endif %}
+</script>
+{% endblock scripts %}
